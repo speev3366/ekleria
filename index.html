@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Пекарна Еклерия във Варна - специализирана пекарна за еклери по оригинална рецепта, закуски и поръчки.">
+    <meta name="theme-color" content="#231711">
+    <title>Пекарна Еклерия | Варна</title>
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+    <!-- Open Graph / social sharing.
+         NOTE: og:image / og:url use relative paths. When the live domain is known,
+         prefix them with the absolute URL (e.g. https://example.com/) for reliable previews. -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Пекарна Еклерия">
+    <meta property="og:title" content="Пекарна Еклерия | Варна">
+    <meta property="og:description" content="Специализирана пекарна за еклери по оригинална рецепта във Варна - крем, фина глазура и ежедневна свежест.">
+    <meta property="og:image" content="assets/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="bg_BG">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Пекарна Еклерия | Варна">
+    <meta name="twitter:description" content="Специализирана пекарна за еклери по оригинална рецепта във Варна.">
+    <meta name="twitter:image" content="assets/og-image.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Bakery",
+      "name": "Пекарна Еклерия",
+      "description": "Специализирана пекарна за еклери по оригинална рецепта във Варна.",
+      "image": "assets/og-image.jpg",
+      "telephone": "+359895646009",
+      "email": "sturgaloto@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Под Игото 58",
+        "addressLocality": "Варна",
+        "addressCountry": "BG"
+      },
+      "servesCuisine": "Bakery, Pastry",
+      "priceRange": "$$",
+      "sameAs": [
+        "https://www.instagram.com/pekarnaekleria/",
+        "https://www.facebook.com/profile.php?id=61581988955698"
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "06:00",
+          "closes": "16:30"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "06:00",
+          "closes": "14:00"
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Еклерия">
+        <img src="assets/images/logo-wall-header.png" alt="Лого на Пекарна Еклерия">
+        <span>Еклерия</span>
+      </a>
+      <nav class="nav" aria-label="Основна навигация">
+        <a href="#story" data-i18n="nav.story">История</a>
+        <a href="#selection" data-i18n="nav.selection">Селекция</a>
+        <div class="nav-item">
+          <a href="#products" data-i18n="nav.products">Продукти</a>
+          <div class="nav-dropdown product-nav-menu" aria-label="Продуктови категории">
+            <div class="nav-subitem">
+              <a href="#eclairs" data-i18n="productCats.eclairs">Еклери</a>
+              <div class="nav-submenu" aria-label="Видове еклери">
+                <a href="#eclairs" data-product-target="0" data-i18n="caramel.title">Карамел</a>
+                <a href="#eclairs" data-product-target="1" data-i18n="flavor.pistachio.title">Шам фъстък</a>
+                <a href="#eclairs" data-product-target="2" data-i18n="flavor.white.title">Бял шоколад</a>
+                <a href="#eclairs" data-product-target="3" data-i18n="flavor.dark.title">Тъмен шоколад</a>
+                <a href="#eclairs" data-product-target="4" data-i18n="flavor.charcoal.title">Активен въглен</a>
+              </div>
+            </div>
+            <a href="#other-products" data-i18n="productCats.other">Друго</a>
+          </div>
+        </div>
+        <a href="#services" data-i18n="nav.services">Услуги</a>
+        <a href="#visit" data-i18n="nav.contacts">Контакти</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang active" type="button" data-lang="bg" aria-pressed="true">BG</button>
+        <button class="lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button class="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobile-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Мобилна навигация">
+      <a href="#story" data-i18n="nav.story">История</a>
+      <a href="#selection" data-i18n="nav.selection">Селекция</a>
+      <a href="#products" data-i18n="nav.products">Продукти</a>
+      <a href="#services" data-i18n="nav.services">Услуги</a>
+      <a href="#visit" data-i18n="nav.contacts">Контакти</a>
+      <a class="button primary mobile-nav-cta" href="tel:+359895646009" data-i18n="hero.primary">Поръчай по телефона</a>
+    </nav>
+
+    <main id="top">
+      <section class="hero">
+        <video class="hero-video-bg" data-hero-video="bg" src="assets/videos/ekleria-video-download.mp4#t=0" autoplay muted loop playsinline aria-hidden="true"></video>
+        <video class="hero-video" data-hero-video="main" src="assets/videos/ekleria-video-download.mp4#t=0" autoplay muted loop playsinline poster="assets/images/signature-eclair.png"></video>
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="eyebrow" data-i18n="hero.eyebrow">Специализирана пекарна за Еклери</p>
+          <h1 data-i18n="hero.title">Еклери по оригинална рецепта.</h1>
+          <p class="hero-copy" data-i18n="hero.copy">Място, в което фокусът е един: различни видове еклери, приготвени на място с истински съставки, неустоим крем и фина глазура. Витрината е деликатно допълнена с топли и вкусни закуски.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="tel:+359895646009" data-i18n="hero.primary">Поръчай по телефона</a>
+            <a class="button secondary" href="#story" data-i18n="hero.secondary">Запознайте се с нас</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="marquee" aria-label="Акценти">
+        <span data-i18n="strip.one">Оригинална рецепта</span>
+        <span data-i18n="strip.two">Еклери всеки ден</span>
+        <span data-i18n="strip.three">Активен въглен</span>
+        <span data-i18n="strip.four">Закуски и поръчки</span>
+      </section>
+
+      <section class="story section" id="story">
+        <div class="section-copy">
+          <p class="eyebrow" data-i18n="story.eyebrow">Кои сме ние</p>
+          <h2 data-i18n="story.title">Сладкарски опит, превърнат в собствен дом за вкус.</h2>
+          <p data-i18n="story.copy">След повече от 17 години в занаята Тихомир отваря Еклерия на 27 октомври 2025 г. заедно със своята дама - специализирана пекарна с ясен характер, в която витрината говори най-силно чрез еклерите по оригинална рецепта.</p>
+          <p data-i18n="story.copy2">Тук всяко печиво носи лично отношение: от крема и глазурата до последния детайл в кутията, която стига до вас.</p>
+        </div>
+        <figure class="portrait">
+          <img loading="lazy" decoding="async" src="assets/images/founders.png" alt="Екипът на Пекарна Еклерия">
+        </figure>
+      </section>
+
+      <section class="video-section section">
+        <div class="section-copy">
+          <p class="eyebrow" data-i18n="atelier.eyebrow">В ателието</p>
+          <h2 data-i18n="atelier.title">Кадрите са част от вкуса.</h2>
+          <p data-i18n="atelier.copy">Три кратки кадъра от ателието: кремът, глазурата и финалният детайл. Всичко се приготвя на място - внимателно, чисто и с характер.</p>
+        </div>
+        <div class="video-stack">
+          <video src="assets/videos/atelier-1.mp4" autoplay muted loop playsinline></video>
+          <video src="assets/videos/atelier-2.mp4" autoplay muted loop playsinline></video>
+          <video src="assets/videos/atelier-3.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </section>
+
+      <section class="gallery section" id="gallery" aria-label="Галерия" hidden>
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="gallery.eyebrow">Галерия</p>
+          <h2 data-i18n="gallery.title">Гланц, крем и характер.</h2>
+        </div>
+        <div class="gallery-grid">
+          <figure class="gallery-item tall">
+            <img loading="lazy" decoding="async" src="assets/images/gallery-charcoal-variety.png" alt="Асортимент еклери с активен въглен и глазури">
+          </figure>
+          <figure class="gallery-item">
+            <img loading="lazy" decoding="async" src="assets/images/gallery-caramel-shine.png" alt="Карамелени еклери с гланцова глазура">
+          </figure>
+          <figure class="gallery-item">
+            <img loading="lazy" decoding="async" src="assets/images/gallery-tasting-board.png" alt="Разрязани еклери с крем">
+          </figure>
+          <figure class="gallery-item wide">
+            <img loading="lazy" decoding="async" src="assets/images/gallery-assorted-eclairs.png" alt="Кутия с разнообразни еклери">
+          </figure>
+        </div>
+      </section>
+
+      <section class="selection section" id="selection">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="selection.eyebrow">Селекция</p>
+          <h2 data-i18n="selection.title">Витрина с ритъм, блясък и аромат.</h2>
+        </div>
+        <div class="product-grid">
+          <article class="product feature">
+            <img loading="lazy" decoding="async" src="assets/images/signature-eclair.png" alt="Специален еклер на Еклерия">
+            <div>
+              <span data-i18n="products.signature.kicker">Специалитет</span>
+              <h3 data-i18n="products.signature.title">Еклер по оригинална рецепта</h3>
+              <p data-i18n="products.signature.copy">Нежен крем, фина глазура и балансирана сладост - продуктът, около който е създадена Еклерия.</p>
+            </div>
+          </article>
+          <article class="product">
+            <img loading="lazy" decoding="async" src="assets/images/display-case.png" alt="Витрина с еклери">
+            <div>
+              <span data-i18n="products.case.kicker">Всеки ден</span>
+              <h3 data-i18n="products.case.title">Нашите еклерови произведения</h3>
+              <p data-i18n="products.case.copy">Карамел, бял шоколад, тъмен шоколад и течен шоколад - вкусове с ясна рецепта и ежедневна свежест.</p>
+            </div>
+          </article>
+          <article class="product dark">
+            <img loading="lazy" decoding="async" src="assets/images/selection-charcoal-eclairs-v3.png" alt="Еклери с активен въглен">
+            <div>
+              <span data-i18n="products.charcoal.kicker">Единствен по рода си</span>
+              <h3 data-i18n="products.charcoal.title">Еклер с активен въглен</h3>
+              <p data-i18n="products.charcoal.copy">Разпознаваем специалитет на Еклерия - смел вкус, драматичен цвят и витрина, която се помни.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="products section" id="products">
+        <div class="products-intro">
+          <div>
+            <p class="eyebrow" data-i18n="productsSection.eyebrow">Продукти</p>
+            <h2 data-i18n="productsSection.title">Еклери, които остават в паметта.</h2>
+          </div>
+          <p data-i18n="productsSection.copy">В началото на Варна, на ул. "Под Игото" 58, Еклерия превръща десерта в малък ритуал: истински съставки, неустоим крем, фина глазура и свежест, която се усеща още от първата хапка.</p>
+        </div>
+        <div class="product-categories" aria-label="Категории продукти">
+          <a href="#eclairs" data-i18n="productCats.eclairs">Еклери</a>
+          <a href="#other-products" data-i18n="productCats.other">Друго</a>
+        </div>
+        <div class="product-stage" id="eclairs" data-product-stage>
+          <div class="product-stage-sticky">
+            <div class="product-stage-head">
+              <span data-product-count>01 / 05</span>
+              <div class="product-stage-line"><i data-product-progress></i></div>
+            </div>
+            <div class="product-track" data-product-track>
+              <article class="product-slide">
+                <div class="product-slide-copy">
+                  <span data-i18n="caramel.number">Продукт 01</span>
+                  <h3 data-i18n="caramel.title">Карамел</h3>
+                  <p data-i18n="caramel.copy">Еклер с копринен крем и лъскава карамелена глазура, която се стича бавно и оставя дълбок, топъл послевкус. Свеж, лек и изкушаващо балансиран.</p>
+                  <ul>
+                    <li data-i18n="caramel.note1">Приготвен на място</li>
+                    <li data-i18n="caramel.note2">Истински съставки</li>
+                    <li data-i18n="caramel.note3">Фин карамелен завършек</li>
+                  </ul>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render">
+                    <img loading="lazy" decoding="async" src="assets/images/product-alpha-caramel.png" alt="Еклер Карамел">
+                  </figure>
+                </div>
+              </article>
+              <article class="product-slide">
+                <div class="product-slide-copy">
+                  <span data-i18n="product.pistachio.number">Продукт 02</span>
+                  <h3 data-i18n="flavor.pistachio.title">Шам фъстък</h3>
+                  <p data-i18n="flavor.pistachio.copy">Еклер с изразителна глазура от шам фъстък, фин ядков характер и свеж крем, който балансира сладостта с елегантна плътност.</p>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render">
+                    <img loading="lazy" decoding="async" src="assets/images/product-alpha-pistachio.png" alt="Еклер Шам фъстък">
+                  </figure>
+                </div>
+              </article>
+              <article class="product-slide">
+                <div class="product-slide-copy">
+                  <span data-i18n="product.white.number">Продукт 03</span>
+                  <h3 data-i18n="flavor.white.title">Бял шоколад</h3>
+                  <p data-i18n="flavor.white.copy">Нежен еклер с копринена глазура от бял шоколад, мек крем и светъл, чист финал.</p>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render">
+                    <img loading="lazy" decoding="async" src="assets/images/product-alpha-white-chocolate.png" alt="Еклер Бял шоколад">
+                  </figure>
+                </div>
+              </article>
+              <article class="product-slide">
+                <div class="product-slide-copy">
+                  <span data-i18n="product.dark.number">Продукт 04</span>
+                  <h3 data-i18n="flavor.dark.title">Тъмен шоколад</h3>
+                  <p data-i18n="flavor.dark.copy">По-дълбок шоколадов профил с лъскава глазура, наситен вкус и елегантен какаов финал.</p>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render">
+                    <img loading="lazy" decoding="async" src="assets/images/product-alpha-dark-chocolate.png" alt="Еклер Тъмен шоколад">
+                  </figure>
+                </div>
+              </article>
+              <article class="product-slide">
+                <div class="product-slide-copy">
+                  <span data-i18n="product.charcoal.number">Продукт 05</span>
+                  <h3 data-i18n="flavor.charcoal.title">Активен въглен</h3>
+                  <p data-i18n="flavor.charcoal.copy">Специалитетът на Еклерия: еклер с активен въглен, контрастен крем и драматична визия, създадена да се помни.</p>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render">
+                    <img loading="lazy" decoding="async" src="assets/images/product-alpha-charcoal.png" alt="Еклер с активен въглен">
+                  </figure>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+        <figure class="products-overview">
+          <img loading="lazy" decoding="async" src="assets/images/products-overview.png" alt="Селекция от еклери на Еклерия">
+        </figure>
+        <div class="products-showcase" data-legacy-products>
+          <div class="eclair-list">
+            <article class="product-detail caramel-feature">
+              <div class="product-detail-copy">
+                <span data-i18n="caramel.number">Продукт 01</span>
+                <h3 data-i18n="caramel.title">Карамел</h3>
+                <p data-i18n="caramel.copy">Еклер с копринен крем и лъскава карамелена глазура, която се стича бавно и оставя дълбок, топъл послевкус. Свеж, лек и изкушаващо балансиран.</p>
+                <ul>
+                  <li data-i18n="caramel.note1">Приготвен на място</li>
+                  <li data-i18n="caramel.note2">Истински съставки</li>
+                  <li data-i18n="caramel.note3">Фин карамелен завършек</li>
+                </ul>
+              </div>
+              <div class="caramel-gallery">
+                <img loading="lazy" decoding="async" src="assets/images/product-caramel-close.png" alt="Еклери с карамелена глазура отблизо">
+                <img loading="lazy" decoding="async" src="assets/images/product-caramel-tray.png" alt="Еклери Карамел в тава">
+              </div>
+            </article>
+            <div class="product-flavors">
+              <article><span>02</span><h3 data-i18n="flavor.white.title">Бял шоколад</h3><p data-i18n="flavor.white.copy">Нежен, светъл и кремообразен профил.</p></article>
+              <article><span>03</span><h3 data-i18n="flavor.dark.title">Тъмен шоколад</h3><p data-i18n="flavor.dark.copy">По-дълбок шоколадов вкус с елегантен финал.</p></article>
+              <article><span>04</span><h3 data-i18n="flavor.liquid.title">Течен шоколад</h3><p data-i18n="flavor.liquid.copy">Богат, мек и изразително шоколадов.</p></article>
+              <article class="charcoal"><span>05</span><h3 data-i18n="flavor.charcoal.title">Активен въглен</h3><p data-i18n="flavor.charcoal.copy">Единствен по рода си еклер с драматичен характер.</p></article>
+            </div>
+          </div>
+        </div>
+        <div class="other-products" id="other-products">
+          <span data-i18n="otherProducts.kicker">Друго</span>
+          <p data-i18n="otherProducts.copy">Закуски и сезонни предложения присъстват като допълнение към основния фокус на Еклерия: еклерите.</p>
+        </div>
+      </section>
+
+      <section class="services section" id="services">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="services.eyebrow">Услуги</p>
+          <h2 data-i18n="services.title">От витрината до вашата трапеза.</h2>
+        </div>
+        <div class="service-list">
+          <article>
+            <span>01</span>
+            <h3 data-i18n="services.one.title">Кетъринг</h3>
+            <p data-i18n="services.one.copy">Сладки и солени предложения за събития, офиси и специални поводи.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3 data-i18n="services.two.title">Доставки</h3>
+            <p data-i18n="services.two.copy">Поръчки за дома и бизнеса във Варна, уточнени директно с екипа.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3 data-i18n="services.three.title">Зареждане на магазини и HoReCa</h3>
+            <p data-i18n="services.three.copy">Печива и десерти за партньори, които търсят постоянство и разпознаваем вкус.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="visit section" id="visit">
+        <div class="visit-card">
+          <p class="eyebrow" data-i18n="visit.eyebrow">Посетете ни</p>
+          <h2 data-i18n="visit.title">гр. Варна, ул. Под Игото 58</h2>
+          <p data-i18n="visit.copy">Заповядайте за пресни еклери по оригинална рецепта, закуски и поръчки за специални поводи.</p>
+          <div class="contact-grid">
+            <a href="tel:+359895646009">
+              <span class="contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6.6 3.7 4.4 5.9c-.8.8-.9 2-.4 3 2.4 5.2 6.9 9.7 12.1 12.1 1 .5 2.2.3 3-.4l2.2-2.2c.5-.5.5-1.3 0-1.8l-3.1-3.1c-.5-.5-1.2-.5-1.7-.1l-1.6 1.1c-.5.4-1.2.4-1.8 0a13 13 0 0 1-3.6-3.6c-.4-.5-.4-1.2 0-1.8l1.1-1.6c.4-.5.3-1.2-.1-1.7L8.4 3.7c-.5-.5-1.3-.5-1.8 0Z"/></svg>
+              </span>
+              089 564 6009
+            </a>
+            <a href="mailto:sturgaloto@gmail.com">
+              <span class="contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 6.8h16v10.4H4V6.8Z"/><path d="m4.7 7.5 7.3 5.8 7.3-5.8"/></svg>
+              </span>
+              sturgaloto@gmail.com
+            </a>
+            <a href="https://www.instagram.com/pekarnaekleria/">
+              <span class="contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="4"/><circle cx="12" cy="12" r="3.2"/><circle cx="16.4" cy="7.7" r=".8"/></svg>
+              </span>
+              @pekarnaekleria
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61581988955698&sk=reels_tab">
+              <span class="contact-icon contact-icon-solid contact-icon-facebook" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M14 8.2h2.3V5.1c-.4-.1-1.7-.2-3-.2-3 0-5 1.8-5 5.1v2.8H5v3.5h3.3V24h3.9v-7.7h3.2l.5-3.5h-3.7v-2.4c0-1 .3-2.2 1.8-2.2Z"/></svg>
+              </span>
+              Пекарна Еклерия
+            </a>
+          </div>
+        </div>
+        <div class="hours">
+          <h3 data-i18n="hours.title">Работно време</h3>
+          <dl>
+            <div><dt data-i18n="hours.weekdays">Понеделник - Петък</dt><dd>6:00 - 16:30</dd></div>
+            <div><dt data-i18n="hours.saturday">Събота</dt><dd>6:00 - 14:00</dd></div>
+            <div><dt data-i18n="hours.sunday">Неделя</dt><dd data-i18n="hours.closed">Почивен ден</dd></div>
+          </dl>
+        </div>
+        <figure class="storefront-photo" aria-label="Снимки от Пекарна Еклерия">
+          <img loading="lazy" decoding="async" src="assets/images/storefront-clean-crop.png" alt="Пекарна Еклерия отвън">
+          <img loading="lazy" decoding="async" src="assets/images/storefront-interior.png" alt="Витрината на Пекарна Еклерия">
+        </figure>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span class="footer-copy" data-i18n="footer.copyright">© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
