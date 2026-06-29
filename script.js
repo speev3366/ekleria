@@ -8,19 +8,19 @@ const translations = {
     "nav.contacts": "Контакти",
     "hero.eyebrow": "Специализирана пекарна за Еклери",
     "hero.title": "Еклери по оригинална рецепта.",
-    "hero.copy": "Място, в което фокусът е един: различни видове еклери, приготвени на място с истински съставки, неустоим крем и фина глазура. Витрината е деликатно допълнена с топли и вкусни закуски.",
-    "hero.primary": "Поръчай по телефона",
+    "hero.copy": "Място, в което фокусът е един: различни видове еклери, приготвени на място с истински съставки, неустоим крем и фина глазура.",
+    "hero.primary": "Свържи се с нас",
     "hero.secondary": "Запознайте се с нас",
     "hero.panelLabel": "Отворено",
     "hero.panelHours": "Пон.-Пет. 6:00-16:30",
     "hero.panelSub": "Събота 6:00-14:00",
     "strip.one": "Оригинална рецепта",
     "strip.two": "Еклери всеки ден",
-    "strip.three": "Активен въглен",
-    "strip.four": "Закуски и поръчки",
+    "strip.three": "Еклери с активен въглен",
+    "strip.four": "Еклери по поръчка",
     "story.eyebrow": "Кои сме ние",
     "story.title": "Сладкарски опит, превърнат в собствен дом за вкус.",
-    "story.copy": "След повече от 17 години в занаята Тихомир отваря Еклерия на 27 октомври 2025 г. заедно със своята дама - специализирана пекарна с ясен характер, в която витрината говори най-силно чрез еклерите по оригинална рецепта.",
+    "story.copy": "След повече от 15 години в занаята Тихомир отваря Еклерия на 27 октомври 2025 г. заедно със своята дама - специализирана пекарна с ясен характер, в която витрината говори най-силно чрез еклерите по оригинална рецепта.",
     "story.copy2": "Тук всяко печиво носи лично отношение: от крема и глазурата до последния детайл в кутията, която стига до вас.",
     "selection.eyebrow": "Селекция",
     "selection.title": "Витрина с ритъм, блясък и аромат.",
@@ -76,12 +76,11 @@ const translations = {
     "gallery.title": "Гланц, крем и характер.",
     "services.eyebrow": "Услуги",
     "services.title": "От витрината до вашата трапеза.",
-    "services.one.title": "Кетъринг",
-    "services.one.copy": "Сладки и солени предложения за събития, офиси и специални поводи.",
-    "services.two.title": "Доставки",
-    "services.two.copy": "Поръчки за дома и бизнеса във Варна, уточнени директно с екипа.",
+    "services.intro": "Искате да опитате от нашите изкусителни произведения или да обсъдим възможност за партньорство? Не се колебайте да ни посетите или да се свържете с нас.",
+    "services.two.title": "Доставка до адрес",
+    "services.two.copy": "Доставяме пресни еклери до дома или на посочен от вас адрес във Варна - бързо, грижливо опаковани и уточнени директно с екипа.",
     "services.three.title": "Зареждане на магазини и HoReCa",
-    "services.three.copy": "Печива и десерти за партньори, които търсят постоянство и разпознаваем вкус.",
+    "services.three.copy": "Зареждаме магазини, кафетерии и сладкарници с печива и десерти за партньори, които търсят постоянство и разпознаваем вкус.",
     "visit.eyebrow": "Посетете ни",
     "visit.title": "гр. Варна, ул. Под Игото 58",
     "visit.map": "Виж на картата",
@@ -103,19 +102,19 @@ const translations = {
     "nav.contacts": "Contacts",
     "hero.eyebrow": "Specialized eclair bakery",
     "hero.title": "Original-recipe eclairs.",
-    "hero.copy": "A place with one clear focus: different kinds of eclairs prepared on site with real ingredients, irresistible cream and fine glaze. The display is delicately complemented by warm, flavorful breakfast pastries.",
-    "hero.primary": "Order by phone",
+    "hero.copy": "A place with one clear focus: different kinds of eclairs prepared on site with real ingredients, irresistible cream and fine glaze.",
+    "hero.primary": "Contact us",
     "hero.secondary": "Meet the bakery",
     "hero.panelLabel": "Open",
     "hero.panelHours": "Mon-Fri 6:00-16:30",
     "hero.panelSub": "Saturday 6:00-14:00",
     "strip.one": "Original recipe",
     "strip.two": "Fresh eclairs daily",
-    "strip.three": "Activated charcoal",
-    "strip.four": "Pastries and orders",
+    "strip.three": "Activated charcoal eclairs",
+    "strip.four": "Eclairs to order",
     "story.eyebrow": "Who we are",
     "story.title": "Pastry experience shaped into a home for taste.",
-    "story.copy": "After more than 17 years in the craft, Tihomir opened Ekleria on October 27, 2025, together with his lady - a specialized bakery with a clear character, where the display speaks most strongly through original-recipe eclairs.",
+    "story.copy": "After more than 15 years in the craft, Tihomir opened Ekleria on October 27, 2025, together with his lady - a specialized bakery with a clear character, where the display speaks most strongly through original-recipe eclairs.",
     "story.copy2": "Every pastry carries a personal touch: from the cream and glaze to the final detail in the box that reaches you.",
     "selection.eyebrow": "Selection",
     "selection.title": "A display with rhythm, gloss and aroma.",
@@ -171,12 +170,11 @@ const translations = {
     "gallery.title": "Gloss, cream and character.",
     "services.eyebrow": "Services",
     "services.title": "From our display to your table.",
-    "services.one.title": "Catering",
-    "services.one.copy": "Sweet and savory selections for events, offices and special occasions.",
-    "services.two.title": "Delivery",
-    "services.two.copy": "Orders for homes and businesses in Varna, arranged directly with the team.",
+    "services.intro": "Would you like to try our tempting creations or discuss a partnership? Don't hesitate to visit us or get in touch.",
+    "services.two.title": "Delivery to your address",
+    "services.two.copy": "We deliver fresh eclairs to your home or any address in Varna - quick, carefully packed and arranged directly with the team.",
     "services.three.title": "Retail and HoReCa supply",
-    "services.three.copy": "Bakes and desserts for partners looking for consistency and recognizable flavor.",
+    "services.three.copy": "We supply shops, cafes and patisseries with bakes and desserts for partners looking for consistency and a recognizable flavor.",
     "visit.eyebrow": "Visit us",
     "visit.title": "Varna, 58 Pod Igoto St.",
     "visit.map": "View on the map",
@@ -209,6 +207,8 @@ function setLanguage(language) {
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
   });
+
+  if (typeof renderService === "function") renderService(false);
 }
 
 const menuToggle = document.querySelector(".menu-toggle");
@@ -362,4 +362,55 @@ document.querySelectorAll("[data-product-target]").forEach((link) => {
   });
 });
 
+const heroServices = {
+  bg: [
+    "Поръчайте еклери за дома",
+    "Зареждаме магазини, сладкарници и кафетерии",
+    "Правим еклери по поръчка",
+    "Не се колебайте да се свържете с нас"
+  ],
+  en: [
+    "Order eclairs for home",
+    "We supply shops, patisseries and cafés",
+    "We make eclairs to order",
+    "Don't hesitate to contact us"
+  ]
+};
+
+const servicesBox = document.querySelector("[data-services]");
+
+function renderService() {
+  if (!servicesBox) return;
+  const list = heroServices[currentLanguage] || heroServices.bg;
+  servicesBox.innerHTML = list
+    .map((s) => `<span class="hero-chip">${s}</span>`)
+    .join("");
+}
+
 setLanguage(currentLanguage);
+renderService();
+
+// Auto-highlight that travels across the service chips and then the two CTAs.
+let svcCycleIndex = 0;
+setInterval(() => {
+  const els = [
+    ...document.querySelectorAll("[data-services] .hero-chip"),
+    ...document.querySelectorAll(".hero-actions .button")
+  ];
+  if (!els.length) return;
+  els.forEach((el) => el.classList.remove("svc-active"));
+  els[svcCycleIndex % els.length].classList.add("svc-active");
+  svcCycleIndex += 1;
+}, 1500);
+
+// "Свържи се с нас" scrolls to the contacts and briefly highlights the phone.
+document.querySelectorAll("[data-contact-cta]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const phone = document.querySelector('.contact-grid a[href^="tel"]');
+    if (!phone) return;
+    setTimeout(() => {
+      phone.classList.add("is-highlighted");
+      setTimeout(() => phone.classList.remove("is-highlighted"), 2600);
+    }, 700);
+  });
+});
