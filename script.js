@@ -77,6 +77,8 @@ const translations = {
     "services.eyebrow": "Услуги",
     "services.title": "От витрината до вашата трапеза.",
     "services.intro": "Искате да опитате от нашите изкусителни произведения или да обсъдим възможност за партньорство? Не се колебайте да ни посетите или да се свържете с нас.",
+    "services.one.title": "Кетъринг услуги",
+    "services.one.copy": "Поръчайте от нашите сладки произведения за вашия специален повод.",
     "services.two.title": "Доставка до адрес",
     "services.two.copy": "Доставяме пресни еклери до дома или на посочен от вас адрес във Варна - бързо, грижливо опаковани и уточнени директно с екипа.",
     "services.three.title": "Зареждане на магазини и HoReCa",
@@ -103,7 +105,7 @@ const translations = {
     "hero.eyebrow": "Specialized eclair bakery",
     "hero.title": "Original-recipe eclairs.",
     "hero.copy": "A place with one clear focus: different kinds of eclairs prepared on site with real ingredients, irresistible cream and fine glaze.",
-    "hero.primary": "Contact us",
+    "hero.primary": "Visit us",
     "hero.secondary": "Meet the bakery",
     "hero.panelLabel": "Open",
     "hero.panelHours": "Mon-Fri 6:00-16:30",
@@ -171,6 +173,8 @@ const translations = {
     "services.eyebrow": "Services",
     "services.title": "From our display to your table.",
     "services.intro": "Would you like to try our tempting creations or discuss a partnership? Don't hesitate to visit us or get in touch.",
+    "services.one.title": "Catering services",
+    "services.one.copy": "Order from our sweet creations for your special occasion.",
     "services.two.title": "Delivery to your address",
     "services.two.copy": "We deliver fresh eclairs to your home or any address in Varna - quick, carefully packed and arranged directly with the team.",
     "services.three.title": "Retail and HoReCa supply",
@@ -366,44 +370,50 @@ const heroServices = {
   bg: [
     "Поръчайте еклери за дома",
     "Зареждаме магазини, сладкарници и кафетерии",
-    "Правим еклери по поръчка",
+    "Производство на еклери по поръчка",
     "Не се колебайте да се свържете с нас"
   ],
   en: [
     "Order eclairs for home",
     "We supply shops, patisseries and cafés",
-    "We make eclairs to order",
+    "Custom eclair production to order",
     "Don't hesitate to contact us"
   ]
 };
 
-const servicesBox = document.querySelector("[data-services]");
+const servicesTrack = document.querySelector("[data-services-rotator]");
+let servicesIndex = 0;
 
-function renderService() {
-  if (!servicesBox) return;
+function renderService(animate) {
+  if (!servicesTrack) return;
   const list = heroServices[currentLanguage] || heroServices.bg;
-  servicesBox.innerHTML = list
-    .map((s) => `<span class="hero-chip">${s}</span>`)
-    .join("");
+  const text = servicesTrack.querySelector(".hero-services-text");
+  if (!text) return;
+  const next = list[servicesIndex % list.length];
+  if (!animate) {
+    text.textContent = next;
+    return;
+  }
+  text.classList.add("is-out");
+  setTimeout(() => {
+    text.textContent = next;
+    text.classList.remove("is-out");
+    text.classList.add("is-in");
+    requestAnimationFrame(() => requestAnimationFrame(() => text.classList.remove("is-in")));
+  }, 450);
+}
+
+if (servicesTrack) {
+  setInterval(() => {
+    servicesIndex = (servicesIndex + 1) % heroServices.bg.length;
+    renderService(true);
+  }, 2800);
 }
 
 setLanguage(currentLanguage);
-renderService();
+renderService(false);
 
-// Auto-highlight that travels across the service chips and then the two CTAs.
-let svcCycleIndex = 0;
-setInterval(() => {
-  const els = [
-    ...document.querySelectorAll("[data-services] .hero-chip"),
-    ...document.querySelectorAll(".hero-actions .button")
-  ];
-  if (!els.length) return;
-  els.forEach((el) => el.classList.remove("svc-active"));
-  els[svcCycleIndex % els.length].classList.add("svc-active");
-  svcCycleIndex += 1;
-}, 1500);
-
-// "Свържи се с нас" scrolls to the contacts and briefly highlights the phone.
+// "Посетете ни" scrolls to the contacts and briefly highlights the phone.
 document.querySelectorAll("[data-contact-cta]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const phone = document.querySelector('.contact-grid a[href^="tel"]');
