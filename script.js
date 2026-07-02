@@ -87,7 +87,7 @@ const translations = {
     "visit.title": "гр. Варна, ул. Под Игото 58",
     "visit.map": "Виж на картата",
     "review.title": "Оценете ни в Google",
-    "review.copy": "Ще се радваме на вашата обратна връзка и оценка.",
+    "review.copy": "Вашата обратна връзка е ценна за нас. Ще се радваме да ни оцените.",
     "visit.copy": "Заповядайте за пресни еклери по оригинална рецепта, закуски и поръчки за специални поводи.",
     "hours.title": "Работно време",
     "hours.weekdays": "Понеделник - Петък",
@@ -185,7 +185,7 @@ const translations = {
     "visit.title": "Varna, 58 Pod Igoto St.",
     "visit.map": "View on the map",
     "review.title": "Rate us on Google",
-    "review.copy": "We'd love your feedback and rating.",
+    "review.copy": "Your feedback matters to us. We'd love your rating.",
     "visit.copy": "Visit us for fresh original-recipe eclairs, pastries and orders for special occasions.",
     "hours.title": "Opening hours",
     "hours.weekdays": "Monday - Friday",
@@ -197,8 +197,8 @@ const translations = {
   }
 };
 
-const preferred = navigator.language.toLowerCase().startsWith("bg") ? "bg" : "en";
-let currentLanguage = localStorage.getItem("ekleria-language") || preferred;
+// Default to Bulgarian unless the visitor has explicitly chosen a language before.
+let currentLanguage = localStorage.getItem("ekleria-language") || "bg";
 
 function setLanguage(language) {
   currentLanguage = language;
