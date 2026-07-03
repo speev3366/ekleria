@@ -472,3 +472,133 @@ if (atelierPlayer) {
 
   if (atCount) atCount.textContent = `1 / ${atelierPlaylist.length}`;
 }
+
+/* ============================================================
+   Scroll reveal — sections & cards float up into view like a
+   buoy settling on a wave. Progressive enhancement: if this
+   never runs, CSS keeps everything visible.
+   ============================================================ */
+(function initScrollReveal() {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+
+  function run() {
+    var groups = [
+      ".hero-content > *",
+      ".section-heading > *",
+      ".section-copy > *",
+      ".products-intro > *",
+      ".product-categories a",
+      ".product",
+      ".product-detail",
+      ".product-flavors article",
+      ".service-list article",
+      ".visit-card",
+      ".visit-aside > *",
+      ".storefront-photo",
+      ".video-player",
+      ".products-overview"
+    ];
+    var nodes = [];
+    groups.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute("data-reveal")) nodes.push(el);
+      });
+    });
+    if (!nodes.length) return;
+
+    document.documentElement.classList.add("js-reveal");
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        // small stagger among siblings for a "spilling" cascade
+        var sibs = Array.prototype.slice.call(el.parentNode ? el.parentNode.children : []);
+        var idx = Math.max(0, sibs.indexOf(el));
+        el.style.setProperty("--reveal-delay", Math.min(idx * 80, 320) + "ms");
+        el.classList.add("is-visible");
+        io.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+
+    nodes.forEach(function (el) {
+      el.setAttribute("data-reveal", "");
+      // anything already on screen at load reveals immediately (no flash)
+      var r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+        el.classList.add("is-visible");
+      } else {
+        io.observe(el);
+      }
+    });
+
+    // safety net: if the observer never fires (broken/unsupported edge cases),
+    // reveal anything still hidden after a while so content can't get stuck
+    setTimeout(function () {
+      document.querySelectorAll("[data-reveal]:not(.is-visible)").forEach(function (el) {
+        el.classList.add("is-visible");
+      });
+    }, 15000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+/* ============================================================
+   Extra flair — scroll-progress bar + magnetic buttons.
+   Pure enhancement; guarded so nothing breaks if unsupported.
+   ============================================================ */
+(function initFlair() {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function run() {
+    // --- scroll progress bar ---
+    if (!reduce) {
+      var bar = document.createElement("div");
+      bar.className = "scroll-progress";
+      document.body.appendChild(bar);
+      var ticking = false;
+      function update() {
+        var h = document.documentElement;
+        var max = h.scrollHeight - h.clientHeight;
+        var p = max > 0 ? h.scrollTop / max : 0;
+        bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
+        ticking = false;
+      }
+      window.addEventListener("scroll", function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener("resize", update, { passive: true });
+      update();
+    }
+
+    // --- magnetic buttons + language pills (fine-pointer only) ---
+    var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (fine && !reduce) {
+      var magnets = document.querySelectorAll(".button, .lang, .menu-toggle");
+      magnets.forEach(function (el) {
+        el.style.transition = (el.style.transition ? el.style.transition + "," : "") + " transform .25s cubic-bezier(.22,1,.36,1)";
+        el.addEventListener("pointermove", function (e) {
+          var r = el.getBoundingClientRect();
+          var mx = e.clientX - (r.left + r.width / 2);
+          var my = e.clientY - (r.top + r.height / 2);
+          el.style.transform = "translate(" + (mx * 0.18).toFixed(1) + "px," + (my * 0.28).toFixed(1) + "px)";
+        });
+        el.addEventListener("pointerleave", function () {
+          el.style.transform = "";
+        });
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
