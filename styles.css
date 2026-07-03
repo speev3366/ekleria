@@ -1374,7 +1374,7 @@ p {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  opacity: .5;
+  opacity: .4;
 }
 
 .atelier-nav:hover { opacity: 1; }
@@ -1397,6 +1397,16 @@ p {
 .video-player:hover .atelier-pp {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* touch devices: :hover sticks after a tap and the pause button blocks the
+   video, so keep it hidden there (tapping the video toggles play/pause) */
+@media (hover: none) {
+  .atelier-pp,
+  .video-player:hover .atelier-pp {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .atelier-pp svg { width: 26px; height: 26px; }
@@ -1747,8 +1757,8 @@ p {
 
 .visit-review-qr img {
   display: block;
-  width: 158px;
-  height: 158px;
+  width: 196px;
+  height: 196px;
   padding: 8px;
   background: #fff;
   border: 1px solid rgba(35, 23, 17, .14);

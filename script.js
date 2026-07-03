@@ -462,6 +462,11 @@ if (atelierPlayer) {
       else atelierPlayer.pause();
     });
   }
+  // tap/click the video itself toggles play/pause (main control on touch devices)
+  atelierPlayer.addEventListener("click", () => {
+    if (atelierPlayer.paused) atelierPlayer.play().catch(() => {});
+    else atelierPlayer.pause();
+  });
   atelierPlayer.addEventListener("play", () => atPP && atPP.classList.remove("paused"));
   atelierPlayer.addEventListener("pause", () => atPP && atPP.classList.add("paused"));
 
