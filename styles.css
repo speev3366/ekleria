@@ -2795,7 +2795,7 @@ body::before { display: none; }
      phone lift it, enlarge it, and turn it a touch toward the viewer */
   .eclair-pedestal.boutique-render.trio img[src*="charcoal"] {
     rotate: 14deg;
-    scale: 1.30;
+    scale: 1.35;
     translate: 0 -6px;
   }
   .eclair-pedestal.boutique-render.trio img:not(:first-child) {
