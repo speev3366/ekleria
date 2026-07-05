@@ -1133,12 +1133,13 @@ p {
   transform: translateY(6px);
   /* keep the eclairs smaller and elegant, sitting back on the stage */
   scale: 0.8;
+  /* single drop-shadow instead of two — much cheaper to repaint while the
+     eclairs levitate (was a big part of the scroll lag) */
   filter:
-    drop-shadow(0 42px 40px rgba(0,0,0,.55))
-    drop-shadow(0 0 50px rgba(255,182,92,.34))
-    saturate(1.08)
-    contrast(1.05)
-    brightness(1.04);
+    drop-shadow(0 26px 24px rgba(0,0,0,.5))
+    saturate(1.07)
+    contrast(1.04)
+    brightness(1.03);
   animation: eclairLevitate 6.5s ease-in-out infinite;
 }
 
@@ -2397,3 +2398,482 @@ html.js-reveal [data-reveal].is-visible { filter: none; }
 
 /* inner gold frame inside each eclair presentation slide */
 .product-slide::before { border-radius: 26px; }
+
+/* ============================================================
+   REDESIGN LAYER 4 — full-bleed strip, rounded footer,
+   special headings, animated wavy logo background
+   ============================================================ */
+
+/* 1) category strip: edge-to-edge again, with a gap from the clip above */
+.marquee {
+  margin: 22px 0 0;
+  border-radius: 0;
+}
+
+/* 2) footer: floating rounded dark panel at the very bottom */
+.footer {
+  margin: 0 clamp(18px, 5vw, 72px) 20px;
+  border-radius: var(--r-lg);
+}
+
+/* 3a) eyebrows — a small gold accent dash + soft glow makes them feel crafted */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 1.4px;
+  text-shadow: 0 2px 16px rgba(200, 155, 72, .45);
+}
+.eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  margin-right: 11px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+  -webkit-text-fill-color: initial;
+}
+
+/* 3b) section titles get gentle depth instead of flat text */
+.section-heading h2,
+.section-copy h2,
+.products-intro h2,
+.visit-card h2 {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .45), 0 18px 34px rgba(35, 23, 17, .12);
+}
+/* headings that sit on dark backgrounds want a warm glow instead */
+.product-slide-copy h3,
+.hero-content h1 {
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .45), 0 0 22px rgba(200, 155, 72, .18);
+}
+
+/* 4) animated Ekleria logo watermark drifting behind the content */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -14%;
+  z-index: -1;
+  pointer-events: none;
+  background: url("assets/images/logo-watermark.png") center center / min(52vw, 520px) no-repeat;
+  opacity: .18;
+  will-change: transform;
+  animation: logoWave 22s ease-in-out infinite;
+}
+/* gentle "floating on water" undulation — soft bob + slight skew, no spin */
+@keyframes logoWave {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1) skewX(0deg); }
+  25%      { transform: translate3d(1.2%, -1.6%, 0) scale(1.03) skewX(1.1deg); }
+  50%      { transform: translate3d(0, 1.9%, 0) scale(1.05) skewX(0deg); }
+  75%      { transform: translate3d(-1.2%, -0.6%, 0) scale(1.03) skewX(-1.1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}
+
+/* ============================================================
+   REDESIGN LAYER 5 — designer pass: floating header, animated
+   logo glow, sweeping eyebrow sheen, traveling border light
+   ============================================================ */
+
+/* custom prop so we can animate a conic-gradient's angle */
+@property --hsang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* 1) header detaches from the top and floats as a rounded capsule */
+.site-header {
+  top: 14px;
+  left: clamp(12px, 3vw, 34px);
+  right: clamp(12px, 3vw, 34px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 250, 241, .16);
+  background: rgba(24, 13, 9, .30);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, .30);
+}
+.site-header.scrolled {
+  border-color: rgba(35, 23, 17, .12);
+  box-shadow: 0 16px 44px rgba(35, 23, 17, .16);
+}
+
+/* 2) a soft gold light travels around the logo */
+.brand { position: relative; }
+.brand::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+  background: conic-gradient(from 0deg,
+    transparent 0deg, transparent 250deg,
+    rgba(240, 214, 138, .85) 315deg, transparent 360deg);
+  filter: blur(5px);
+  transform: translateY(-50%) rotate(0deg);
+  animation: brandSpin 3.4s linear infinite;
+}
+@keyframes brandSpin { to { transform: translateY(-50%) rotate(360deg); } }
+.brand img { animation: logoPulse 3.4s ease-in-out infinite; }
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 8px 22px rgba(35,23,17,.16), 0 0 0 0 rgba(200,155,72,0); }
+  50%      { box-shadow: 0 8px 22px rgba(35,23,17,.16), 0 0 20px 3px rgba(200,155,72,.5); }
+}
+
+/* 3) eyebrows: solid gold with a bright sheen that sweeps through
+   the whole word AND the leading dash (applied site-wide) */
+.eyebrow {
+  background: linear-gradient(100deg,
+    var(--gold) 0%, var(--gold) 38%,
+    #fff4d6 50%,
+    var(--gold) 62%, var(--gold) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: eyebrowSheen 3.8s linear infinite;
+}
+.eyebrow::before {
+  background: linear-gradient(100deg,
+    rgba(200,155,72,.25) 0%, var(--gold) 44%,
+    #fff4d6 50%, var(--gold) 56%, rgba(200,155,72,.25) 100%);
+  background-size: 300% 100%;
+  -webkit-text-fill-color: initial;
+  animation: eyebrowSheen 3.8s linear infinite;
+}
+@keyframes eyebrowSheen {
+  0%   { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
+}
+
+/* 4) services chip: a light travels around the pill's outline */
+.hero-services { position: relative; }
+.hero-services::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.6px;
+  pointer-events: none;
+  background: conic-gradient(from var(--hsang),
+    transparent 0deg, transparent 255deg,
+    rgba(240,214,138,.2) 300deg, #fff2cf 342deg, rgba(240,214,138,.95) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: hsTravel 3.6s linear infinite;
+}
+@keyframes hsTravel { to { --hsang: 360deg; } }
+
+/* 5) category strip rounded to match the header capsule */
+.marquee {
+  margin: 22px clamp(12px, 3vw, 34px) 0;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(35, 23, 17, .12);
+}
+
+/* 6) the "Друго" panel was missed — round it too */
+.other-products { border-radius: var(--r-lg); }
+
+/* 7) MOBILE FIX: long rotating service lines were clipped in portrait;
+   let them wrap instead of overflowing a single nowrap line */
+@media (max-width: 640px) {
+  .hero-services { max-width: 100%; }
+  .hero-services-track,
+  .hero-services-text { white-space: normal; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand::before,
+  .brand img,
+  .eyebrow,
+  .eyebrow::before,
+  .hero-services::after { animation: none; }
+}
+
+/* ============================================================
+   REDESIGN LAYER 6 — compact strip, golden eclair names,
+   spotlight "curtain reveal" dimming
+   ============================================================ */
+
+/* 1) category strip: tighter boxes so single-line items aren't empty */
+.marquee span {
+  padding: 12px 14px;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+/* 2) eclair names go gold with the same sheen as the eyebrows
+   (font size / family unchanged) */
+.product-slide-copy h3 {
+  background: linear-gradient(100deg,
+    var(--gold) 0%, var(--gold) 38%,
+    #fff4d6 50%,
+    var(--gold) 62%, var(--gold) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, .3);
+  animation: eyebrowSheen 3.8s linear infinite;
+}
+
+/* 3) beams kept static (the old per-scroll brightness dimming caused the
+   heavy repaint / scroll lag, so it's removed) */
+.product-spotlight::before {
+  filter: blur(.35px);
+}
+.product-spotlight .spotlight-beam {
+  filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-slide-copy h3 { animation: none; }
+}
+
+/* ============================================================
+   REDESIGN LAYER 7 — watermark off, spotlight un-clipped,
+   rounded kicker badges, fix clipped last glyph
+   ============================================================ */
+
+/* 1) watermark off for now */
+body::before { display: none; }
+
+/* 2+4) the stage rounding was clipping the top of the spotlight beams;
+   revert to square so the beams read full and converge on the eclair */
+.product-stage-sticky { border-radius: 0; }
+
+/* 3) the gold sheen (background-clip:text) was cutting the last glyph's
+   overhang — give it room so letters like "д" render fully */
+.product-slide-copy h3 { padding-right: .22em; }
+
+/* 5) "Селекция" kicker tags were sharp rectangles — round to match */
+.product span { border-radius: 999px; }
+
+/* ============================================================
+   REDESIGN LAYER 8 — fix clipped descenders on gold names,
+   sequential "one-by-one" highlight of listed ingredients
+   ============================================================ */
+
+/* the gold names use background-clip:text; the tight line-height let glyph
+   descenders (е.g. "д", "р") fall outside the fill box and look cut.
+   Extra bottom/right padding grows the fill box to cover them. */
+.product-slide-copy h3 {
+  padding-right: .24em;
+  padding-bottom: .16em;
+  margin-bottom: 30px;
+}
+.product-slide:has(.glaze-list) .product-slide-copy h3 { margin-bottom: 16px; }
+
+/* ingredient rows: smooth so the marking fades in (glint) and holds */
+.product-slide-copy li,
+.product-slide-copy li::before,
+.product-slide-copy li::after {
+  transition: color .45s ease, background .45s ease,
+    box-shadow .45s ease, border-color .45s ease, transform .45s ease;
+}
+
+/* the currently-marked row: warm glow + held gold colour */
+.product-slide-copy li.is-marked {
+  color: #fff4d6;
+}
+.product-slide-copy li.is-marked::before {
+  border-color: #f4de9e;
+  background:
+    radial-gradient(circle, rgba(245,222,158,.6), rgba(200,155,72,.28) 60%, transparent 74%),
+    rgba(200,155,72,.42);
+  box-shadow: 0 0 20px 3px rgba(200,155,72,.55);
+}
+.product-slide-copy li.is-marked::after {
+  background: #f4de9e;
+  box-shadow: 0 0 12px rgba(245,222,158,.85);
+  transform: rotate(45deg) scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-slide-copy li,
+  .product-slide-copy li::before,
+  .product-slide-copy li::after { transition: none; }
+}
+
+/* ============================================================
+   REDESIGN LAYER 9 — underline back up, tighter section rhythm
+   ============================================================ */
+
+/* the descender padding pushed the h3 accent line down; the +.16em cancels
+   that shift so the line sits ~14px under the name for every slide */
+.product-slide-copy h3::after { bottom: calc(-14px + .16em); }
+
+/* sections had 128px top+bottom (256px between) with no special reason —
+   halve it for a tighter rhythm */
+.section { padding-top: 64px; padding-bottom: 64px; }
+
+/* ============================================================
+   EXPERIMENT LAYER — trio eclairs on the podium + re-aimed beams
+   (delete this whole block + the JS "EXPERIMENT" block to revert)
+   ============================================================ */
+.eclair-pedestal.boutique-render.trio {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  width: min(34vw, 578px); /* smaller + set a touch further back on the disc */
+}
+/* eclairs sitting almost shoulder-to-shoulder; the overlap cancels the
+   transparent margins baked into the PNGs so they read as nearly touching */
+.eclair-pedestal.boutique-render.trio img {
+  width: 40%;
+  scale: 1;
+}
+.eclair-pedestal.boutique-render.trio img:not(:first-child) {
+  margin-left: -16%; /* almost glued together */
+}
+/* charcoal PNGs carry more empty space; pull in a bit — but not so much that
+   only the glossy tops of the back two show (that made them look lighter) */
+.eclair-pedestal.boutique-render.trio img[src*="charcoal"]:not(:first-child) {
+  margin-left: -21%;
+}
+/* gentle staggered levitation so the three don't bob in lockstep */
+.eclair-pedestal.boutique-render.trio img:nth-child(2) { animation-delay: -2.1s; }
+.eclair-pedestal.boutique-render.trio img:nth-child(3) { animation-delay: -4.2s; }
+
+/* crossed beams — end sources sit wider (toward the corners) and angle in.
+   Same look is applied to the roll slide too. */
+.product-spotlight:has(.trio)::before,
+.product-spotlight:has(.roll-render)::before {
+  background:
+    radial-gradient(circle at 34% -2%, rgba(255,245,218,.82) 0 2.4%, rgba(231,176,105,.38) 4.8%, transparent 8%),
+    radial-gradient(circle at 50% -2%, rgba(255,245,218,.88) 0 2.5%, rgba(231,176,105,.42) 5%, transparent 8.4%),
+    radial-gradient(circle at 66% -2%, rgba(255,245,218,.82) 0 2.4%, rgba(231,176,105,.38) 4.8%, transparent 8%),
+    conic-gradient(at 34% -6%, transparent 0 137deg, rgba(255,232,183,.34) 145deg, rgba(218,147,76,.12) 152deg, transparent 157deg 360deg),
+    conic-gradient(at 50% -6%, transparent 0 173deg, rgba(255,236,196,.4) 180deg, rgba(218,147,76,.13) 186deg, transparent 189deg 360deg),
+    conic-gradient(at 66% -6%, transparent 0 203deg, rgba(218,147,76,.12) 208deg, rgba(255,232,183,.34) 215deg, transparent 223deg 360deg),
+    radial-gradient(ellipse at 50% 58%, rgba(200,116,43,.28), transparent 40%);
+}
+
+/* --- trio eclair sizing: keep every flavour the same appetising size,
+   with charcoal & dark-chocolate a touch bigger/expressive --- */
+.eclair-pedestal.boutique-render.charcoal-render.trio {
+  width: min(34vw, 578px); /* match the others */
+}
+.eclair-pedestal.boutique-render.trio img[src*="charcoal"] {
+  width: 40%;
+  scale: 1.02;      /* close to the others */
+  rotate: 22deg;    /* charcoal PNG has a steep baked-in tilt; more CSS
+                       rotation actually lays it flatter */
+  translate: 0 16px; /* nudge down closer to the podium */
+}
+.eclair-pedestal.boutique-render.trio img[src*="dark-chocolate"] {
+  width: 42%;       /* +5% over the base, expressive but still on the podium */
+  rotate: 12deg;
+}
+/* pull the dark-chocolate trio in tighter — it read a touch spread */
+.eclair-pedestal.boutique-render.trio img[src*="dark-chocolate"]:not(:first-child) {
+  margin-left: -22%;
+}
+
+/* EXPERIMENT (cont.) — stacked/≤980 view: make the trio scene as prominent
+   as the desktop reference (bigger podium + eclairs, aligned beams) */
+@media (max-width: 980px) {
+  .product-slide:has(.trio) .product-spotlight {
+    min-height: 230px;
+    padding: 24px 0 22px;
+  }
+  .eclair-pedestal.boutique-render.trio {
+    width: min(70vw, 320px); /* bigger on phone (was small on the big stage) */
+    transform: translateY(-10px); /* lift them up so they rest on top of the podium */
+  }
+  .eclair-pedestal.boutique-render.trio img {
+    width: 40%;
+    max-height: 132px;
+  }
+  /* charcoal on phone: it inherits a downward nudge + renders small, so on
+     phone lift it, enlarge it, and turn it a touch toward the viewer */
+  .eclair-pedestal.boutique-render.trio img[src*="charcoal"] {
+    rotate: 14deg;
+    scale: 1.25;
+    translate: 0 -6px;
+  }
+  .eclair-pedestal.boutique-render.trio img:not(:first-child) {
+    margin-left: -13%; /* closer together */
+  }
+  .product-slide:has(.trio) .product-spotlight::after {
+    width: min(73vw, 398px); /* pedestal −5-6% */
+    height: 100px;
+    bottom: 12px;
+  }
+  /* beams: fade the bottom smoothly (soft mask) instead of a hard clip, so the
+     light reaches down level with the podium without a cut-off line or a pool
+     of light under the stand */
+  .product-spotlight:has(.trio)::before,
+  .product-spotlight:has(.roll-render)::before {
+    inset: -8px -1% 0;
+    -webkit-mask: linear-gradient(180deg, #000 0 82%, transparent 96%);
+            mask: linear-gradient(180deg, #000 0 82%, transparent 96%);
+    background:
+      radial-gradient(circle at 30% -2%, rgba(255,245,218,.82) 0 2.2%, rgba(231,176,105,.38) 4.4%, transparent 7.4%),
+      radial-gradient(circle at 50% -2%, rgba(255,245,218,.88) 0 2.3%, rgba(231,176,105,.42) 4.6%, transparent 7.8%),
+      radial-gradient(circle at 70% -2%, rgba(255,245,218,.82) 0 2.2%, rgba(231,176,105,.38) 4.4%, transparent 7.4%),
+      conic-gradient(at 30% -5%, transparent 0 137deg, rgba(255,232,183,.34) 145deg, rgba(218,147,76,.12) 152deg, transparent 157deg 360deg),
+      conic-gradient(at 50% -5%, transparent 0 173deg, rgba(255,236,196,.4) 180deg, rgba(218,147,76,.13) 186deg, transparent 189deg 360deg),
+      conic-gradient(at 70% -5%, transparent 0 203deg, rgba(218,147,76,.12) 208deg, rgba(255,232,183,.34) 215deg, transparent 223deg 360deg),
+      radial-gradient(ellipse at 50% 60%, rgba(200,116,43,.26), transparent 42%);
+  }
+}
+
+/* ============================================================
+   Auto-hide header — slides up when scrolling down, reveals on
+   scroll up (kept visible near the top and while the menu is open)
+   ============================================================ */
+.site-header {
+  transition: background .28s ease, border-color .28s ease, color .28s ease,
+    box-shadow .28s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+}
+.site-header.header-hidden {
+  transform: translateY(calc(-100% - 22px));
+}
+body.menu-open .site-header.header-hidden {
+  transform: none;
+}
+
+/* EXPERIMENT (cont.) — desktop: drop the podium + eclairs/roll closer to the
+   frame bottom so there's no empty lit gap beneath the stand */
+@media (min-width: 981px) {
+  .product-spotlight { padding-bottom: 30px; }
+  .product-spotlight::after { bottom: 22px; }
+}
+
+/* PERF — on desktop only the centred carousel slide keeps its heavy
+   levitate/beam animations running; the off-screen ones are paused */
+@media (min-width: 981px) {
+  .product-slide:not(.is-active) .eclair-pedestal.boutique-render img,
+  .product-slide:not(.is-active) .spotlight-beam {
+    animation-play-state: paused;
+  }
+  .product-slide:not(.is-active) .product-spotlight::before {
+    animation-play-state: paused;
+  }
+}
+
+/* desktop: set only the first three flavours (caramel, pistachio, white)
+   ~5% further back on the podium */
+@media (min-width: 981px) {
+  .eclair-pedestal.boutique-render.trio img[src*="product-alpha-caramel"],
+  .eclair-pedestal.boutique-render.trio img[src*="product-alpha-pistachio"],
+  .eclair-pedestal.boutique-render.trio img[src*="product-alpha-white-chocolate"] {
+    scale: 0.95;
+  }
+}
+
+/* desktop: align the atelier video column with the "who we are" portrait
+   column above it so the video sits centred under the photo */
+@media (min-width: 981px) {
+  .video-section {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, .78fr);
+  }
+}

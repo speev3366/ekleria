@@ -340,9 +340,17 @@ function updateProductStage() {
   const maxTranslate = Math.max(productTrack.scrollWidth - viewportWidth, 0);
   productTrack.style.transform = `translate3d(${-maxTranslate * rawProgress}px, 0, 0)`;
 
+  // only touch the DOM text/width when the active slide actually changes
   const activeIndex = Math.min(slides.length - 1, Math.floor(rawProgress * slides.length));
-  if (productProgress) productProgress.style.width = `${rawProgress * 100}%`;
-  if (productCount) productCount.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+  if (activeIndex !== updateProductStage._last) {
+    updateProductStage._last = activeIndex;
+    if (productProgress) productProgress.style.width = `${(activeIndex / Math.max(slides.length - 1, 1)) * 100}%`;
+    if (productCount) productCount.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+    // let only the on-screen slide run its (heavy) levitate/beam animations
+    for (var i = 0; i < slides.length; i++) {
+      slides[i].classList.toggle("is-active", i === activeIndex);
+    }
+  }
 }
 
 window.addEventListener("scroll", updateProductStage, { passive: true });
@@ -601,4 +609,89 @@ if (atelierPlayer) {
   } else {
     run();
   }
+})();
+
+/* ============================================================
+   Sequential ingredient highlight — each listed item lights up
+   one at a time, first → last, on a loop (no two active at once).
+   Applies to every eclair slide that has a list (Карамел, Руло, …).
+   ============================================================ */
+(function initIngredientSweep() {
+  function run() {
+    var lists = document.querySelectorAll(".product-slide-copy ul");
+    if (!lists.length) return;
+
+    lists.forEach(function (ul) {
+      var items = Array.prototype.slice.call(ul.querySelectorAll("li"));
+      if (!items.length) return;
+
+      var i = 0;
+      function step() {
+        items.forEach(function (li) { li.classList.remove("is-marked"); });
+        items[i % items.length].classList.add("is-marked");
+        i++;
+      }
+      step(); // start on the first item
+      setInterval(step, 2000);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+/* ============================================================
+   EXPERIMENT — trio eclairs: show each eclair x3 on the podium
+   (roll is excluded via .roll-render). Remove this block + the
+   matching CSS "EXPERIMENT" layer to revert.
+   ============================================================ */
+(function initTrioEclairs() {
+  function run() {
+    var pedestals = document.querySelectorAll(".eclair-pedestal.boutique-render:not(.roll-render)");
+    pedestals.forEach(function (fig) {
+      if (fig.classList.contains("trio")) return;
+      var img = fig.querySelector("img");
+      if (!img) return;
+      for (var k = 0; k < 2; k++) {
+        var clone = img.cloneNode(true);
+        clone.removeAttribute("loading");
+        clone.setAttribute("aria-hidden", "true");
+        fig.appendChild(clone);
+      }
+      fig.classList.add("trio");
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+
+/* ============================================================
+   Auto-hide the header on scroll down, reveal on scroll up.
+   ============================================================ */
+(function initHeaderAutohide() {
+  var header = document.querySelector(".site-header");
+  if (!header) return;
+  var lastY = window.scrollY;
+  var ticking = false;
+  function update() {
+    var y = Math.max(0, window.scrollY);
+    if (document.body.classList.contains("menu-open") || y < 90) {
+      header.classList.remove("header-hidden");
+    } else if (y > lastY + 5) {
+      header.classList.add("header-hidden");   // scrolling down
+    } else if (y < lastY - 5) {
+      header.classList.remove("header-hidden"); // scrolling up
+    }
+    lastY = y;
+    ticking = false;
+  }
+  window.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
 })();
