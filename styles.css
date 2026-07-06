@@ -2791,17 +2791,28 @@ body::before { display: none; }
     width: 40%;
     max-height: 132px;
   }
-  /* charcoal on phone: it inherits a downward nudge + renders small, so on
-     phone lift it, enlarge it, and turn it a touch toward the viewer */
+  /* FIX: the desktop charcoal pedestal width (min(34vw,578)) was leaking onto
+     phone (higher specificity) and shrinking the whole thing to ~133px.
+     Give it the same width as the other flavours here. */
+  .eclair-pedestal.boutique-render.charcoal-render.trio {
+    width: min(70vw, 320px);
+    transform: translate(5px, 2px); /* nudge right (so the left eclair isn't
+                                       cut off) + a touch lower */
+  }
+  /* charcoal on phone: flatter (its PNG has a steep baked tilt, so MORE CSS
+     rotation lays it down), matched size, pulled closer together */
   .eclair-pedestal.boutique-render.trio img[src*="charcoal"] {
-    rotate: 14deg;
-    scale: 1.35;
-    translate: 0 -6px;
+    rotate: 20deg;
+    scale: 0.98;
+    translate: 0 0;
+  }
+  .eclair-pedestal.boutique-render.trio img[src*="charcoal"]:not(:first-child) {
+    margin-left: -15%; /* closer together */
   }
   .eclair-pedestal.boutique-render.trio img:not(:first-child) {
     margin-left: -13%; /* closer together */
   }
-  .product-slide:has(.trio) .product-spotlight::after {
+   .product-slide:has(.trio) .product-spotlight::after {
     width: min(73vw, 398px); /* pedestal −5-6% */
     height: 100px;
     bottom: 12px;
@@ -2876,4 +2887,21 @@ body.menu-open .site-header.header-hidden {
   .video-section {
     grid-template-columns: minmax(0, 1fr) minmax(320px, .78fr);
   }
+}
+
+/* mobile: the roll's stage read smaller than the eclair stages — enlarge ~10% */
+@media (max-width: 980px) {
+  .product-slide:has(.roll-render) .product-spotlight::after {
+    width: min(62vw, 396px);
+    height: 108px;
+  }
+}
+
+/* desktop: let the "who we are" portrait fill the text column's height so its
+   bottom stays level with the text at any width (image barely crops — its
+   natural ratio ≈ the display ratio) */
+@media (min-width: 981px) {
+  .story { align-items: stretch; }
+  .story .portrait { align-self: stretch; }
+  .story .portrait img { height: 100%; aspect-ratio: auto; }
 }
