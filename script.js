@@ -264,7 +264,6 @@ window.addEventListener("scroll", updateHeaderState, { passive: true });
 updateHeaderState();
 
 const heroVideos = {
-  bg: document.querySelector("[data-hero-video='bg']"),
   main: document.querySelector("[data-hero-video='main']")
 };
 
@@ -295,7 +294,7 @@ function setHeroClip(index) {
   });
 }
 
-if (heroVideos.bg && heroVideos.main) {
+if (heroVideos.main) {
   setHeroClip(heroClipIndex);
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) {
@@ -328,41 +327,61 @@ const productStage = document.querySelector("[data-product-stage]");
 const productTrack = document.querySelector("[data-product-track]");
 const productProgress = document.querySelector("[data-product-progress]");
 const productCount = document.querySelector("[data-product-count]");
+let productSlides = productTrack ? Array.from(productTrack.children) : [];
+let productMaxTranslate = 0;
+let productTicking = false;
+
+function refreshProductStageMetrics() {
+  if (!productTrack) return;
+  productSlides = Array.from(productTrack.children);
+  productMaxTranslate = Math.max(productTrack.scrollWidth - window.innerWidth, 0);
+}
 
 function updateProductStage() {
   if (!productStage || !productTrack) return;
 
-  const slides = Array.from(productTrack.children);
   const viewportWidth = window.innerWidth;
 
   if (viewportWidth <= 980) {
     productTrack.style.transform = "translate3d(0, 0, 0)";
     if (productProgress) productProgress.style.width = "100%";
-    if (productCount) productCount.textContent = `01 / ${String(slides.length).padStart(2, "0")}`;
+    if (productCount) productCount.textContent = `01 / ${String(productSlides.length).padStart(2, "0")}`;
     return;
   }
 
   const stageRect = productStage.getBoundingClientRect();
   const scrollable = productStage.offsetHeight - window.innerHeight;
   const rawProgress = Math.min(Math.max(-stageRect.top / Math.max(scrollable, 1), 0), 1);
-  const maxTranslate = Math.max(productTrack.scrollWidth - viewportWidth, 0);
-  productTrack.style.transform = `translate3d(${-maxTranslate * rawProgress}px, 0, 0)`;
+  productTrack.style.transform = `translate3d(${-productMaxTranslate * rawProgress}px, 0, 0)`;
 
   // only touch the DOM text/width when the active slide actually changes
-  const activeIndex = Math.min(slides.length - 1, Math.floor(rawProgress * slides.length));
+  const activeIndex = Math.min(productSlides.length - 1, Math.floor(rawProgress * productSlides.length));
   if (activeIndex !== updateProductStage._last) {
     updateProductStage._last = activeIndex;
-    if (productProgress) productProgress.style.width = `${(activeIndex / Math.max(slides.length - 1, 1)) * 100}%`;
-    if (productCount) productCount.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+    if (productProgress) productProgress.style.width = `${(activeIndex / Math.max(productSlides.length - 1, 1)) * 100}%`;
+    if (productCount) productCount.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(productSlides.length).padStart(2, "0")}`;
     // let only the on-screen slide run its (heavy) levitate/beam animations
-    for (var i = 0; i < slides.length; i++) {
-      slides[i].classList.toggle("is-active", i === activeIndex);
+    for (var i = 0; i < productSlides.length; i++) {
+      productSlides[i].classList.toggle("is-active", i === activeIndex);
     }
   }
 }
 
-window.addEventListener("scroll", updateProductStage, { passive: true });
-window.addEventListener("resize", updateProductStage);
+function requestProductStageUpdate() {
+  if (productTicking) return;
+  productTicking = true;
+  requestAnimationFrame(() => {
+    updateProductStage();
+    productTicking = false;
+  });
+}
+
+window.addEventListener("scroll", requestProductStageUpdate, { passive: true });
+window.addEventListener("resize", () => {
+  refreshProductStageMetrics();
+  updateProductStage();
+});
+refreshProductStageMetrics();
 updateProductStage();
 
 document.querySelectorAll("[data-product-target]").forEach((link) => {
@@ -371,16 +390,15 @@ document.querySelectorAll("[data-product-target]").forEach((link) => {
 
     event.preventDefault();
 
-    const slides = Array.from(productTrack.children);
-    const targetIndex = Math.min(Math.max(Number(link.dataset.productTarget) || 0, 0), slides.length - 1);
+    const targetIndex = Math.min(Math.max(Number(link.dataset.productTarget) || 0, 0), productSlides.length - 1);
 
     if (window.innerWidth <= 980) {
-      slides[targetIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
+      productSlides[targetIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
     const scrollable = productStage.offsetHeight - window.innerHeight;
-    const progress = slides.length <= 1 ? 0 : targetIndex / (slides.length - 1);
+    const progress = productSlides.length <= 1 ? 0 : targetIndex / (productSlides.length - 1);
     const targetTop = productStage.getBoundingClientRect().top + window.scrollY + (scrollable * progress);
     window.scrollTo({ top: targetTop, behavior: "smooth" });
   });
@@ -446,6 +464,12 @@ document.querySelectorAll("[data-contact-cta]").forEach((btn) => {
 });
 
 // Atelier: single player that plays the clips one after another (0 → 1 → 2 → 3 → loop).
+document.querySelectorAll(".visit-review-qr").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+});
+
 const atelierPlayer = document.querySelector("[data-atelier-player]");
 const atelierPlaylist = [
   "assets/videos/aterlier-0.mp4",

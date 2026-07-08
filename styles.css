@@ -1043,7 +1043,7 @@ p {
   width: min(50vw, 860px);
   height: min(24vh, 258px);
   transform: translateX(-50%);
-  background: url("assets/images/product-pedestal-luxe.png") center bottom / contain no-repeat;
+  background: url("assets/images/optimized/product-pedestal-luxe.webp") center bottom / contain no-repeat;
   filter: drop-shadow(0 34px 50px rgba(0,0,0,.44));
   pointer-events: none;
 }
@@ -1507,7 +1507,7 @@ p {
 .service-list article:last-child { border-right: 0; }
 
 .visit {
-  grid-template-columns: minmax(340px, .54fr) minmax(280px, .38fr) minmax(42vw, 1fr);
+  grid-template-columns: minmax(340px, .54fr) minmax(320px, .42fr) minmax(40vw, 1fr);
   grid-template-areas:
     "contact hours photo";
   align-items: start;
@@ -1536,7 +1536,7 @@ p {
   grid-area: hours;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   margin-top: 42px; /* line the hours/review up with the address, not the eyebrow */
 }
 
@@ -1588,10 +1588,11 @@ p {
   z-index: 6;
   left: 0;
   bottom: calc(100% + 12px);
-  width: 300px;
-  height: 220px;
+  width: min(380px, 82vw);
+  height: 268px;
   overflow: hidden;
   border: 1px solid rgba(35, 23, 17, .18);
+  background: color-mix(in srgb, var(--paper) 92%, var(--cocoa) 8%);
   box-shadow: 0 22px 48px rgba(35, 23, 17, .22);
   opacity: 0;
   visibility: hidden;
@@ -1612,6 +1613,33 @@ p {
   height: 100%;
   border: 0;
   pointer-events: none;
+}
+
+.visit-map-popup picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.visit-map-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-height: 760px) {
+  .visit-map-popup {
+    top: calc(100% + 12px);
+    bottom: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .visit-map-popup {
+    width: min(320px, calc(100vw - 36px));
+    height: 226px;
+  }
 }
 
 .contact-grid {
@@ -1711,16 +1739,13 @@ p {
 }
 
 .visit-review {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  display: block;
   margin-top: 0;
-  padding: 22px 20px 24px;
+  padding: 8px;
   width: 100%;
-  text-align: center;
   border: 1px solid rgba(35, 23, 17, .16);
-  background: rgba(59, 33, 22, .05);
+  background: rgba(255,250,241,.58);
+  box-shadow: 0 18px 42px rgba(35, 23, 17, .10);
 }
 
 .visit-review-info {
@@ -1751,6 +1776,8 @@ p {
 .visit-review-qr {
   flex: 0 0 auto;
   display: block;
+  overflow: hidden;
+  border-radius: 24px;
   transition: transform .2s ease;
 }
 
@@ -1758,17 +1785,16 @@ p {
 
 .visit-review-qr img {
   display: block;
-  width: 196px;
-  height: 196px;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid rgba(35, 23, 17, .14);
-  box-shadow: 0 8px 20px rgba(35, 23, 17, .12);
+  width: 100%;
+  height: auto;
+  background: #fff8ea;
+  border: 0;
+  box-shadow: none;
 }
 
 .hours {
   width: 100%;
-  padding: 22px 22px 16px;
+  padding: 26px 26px 22px;
   border: 1px solid rgba(35,23,17,.14);
   background: rgba(59,33,22,.045);
 }
@@ -2209,7 +2235,8 @@ p {
 
 /* --- map hover popup + its frame & the pin chip --- */
 .visit-map-popup { border-radius: var(--r-md); overflow: hidden; }
-.visit-map-frame { border-radius: var(--r-md); }
+.visit-map-frame,
+.visit-map-preview { border-radius: var(--r-md); }
 .visit-map-icon { border-radius: 999px; }
 
 /* --- lift-on-hover for the interactive cards --- */
@@ -2861,16 +2888,6 @@ body.menu-open .site-header.header-hidden {
 
 /* PERF — on desktop only the centred carousel slide keeps its heavy
    levitate/beam animations running; the off-screen ones are paused */
-@media (min-width: 981px) {
-  .product-slide:not(.is-active) .eclair-pedestal.boutique-render img,
-  .product-slide:not(.is-active) .spotlight-beam {
-    animation-play-state: paused;
-  }
-  .product-slide:not(.is-active) .product-spotlight::before {
-    animation-play-state: paused;
-  }
-}
-
 /* desktop: set only the first three flavours (caramel, pistachio, white)
    ~5% further back on the podium */
 @media (min-width: 981px) {
@@ -2904,4 +2921,37 @@ body.menu-open .site-header.header-hidden {
   .story { align-items: stretch; }
   .story .portrait { align-self: stretch; }
   .story .portrait img { height: 100%; aspect-ratio: auto; }
+}
+
+/* Review card polish: keep the generated QR artwork fully visible and readable. */
+.visit-review {
+  position: relative;
+  z-index: 8;
+  padding: 0;
+  background: color-mix(in srgb, var(--paper) 92%, var(--cocoa) 8%);
+  border-color: rgba(35,23,17,.14);
+}
+
+.visit-review-qr {
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border-radius: inherit;
+}
+
+.visit-review-qr picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.visit-review-qr:hover {
+  transform: none;
+}
+
+.visit-review-qr img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  animation: none;
 }
