@@ -1537,7 +1537,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-top: 42px; /* line the hours/review up with the address, not the eyebrow */
+  margin-top: 82px; /* line the hours/review up with the address, not the eyebrow */
 }
 
 .visit-card h2 {
@@ -2954,4 +2954,23 @@ body.menu-open .site-header.header-hidden {
   object-fit: cover;
   border-radius: inherit;
   animation: none;
+}
+
+/* Fine tune the contact column alignment with the hours/review column. */
+@media (min-width: 981px) {
+  .visit-card {
+    margin-top: 56px;
+  }
+
+  .visit-map-hover {
+    margin-top: 18px;
+  }
+
+  .visit-card > p:not(.eyebrow) {
+    margin-top: 20px;
+  }
+
+  .visit-card .contact-grid {
+    margin-top: 28px;
+  }
 }
