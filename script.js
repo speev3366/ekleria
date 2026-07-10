@@ -711,9 +711,22 @@ if (atelierPlayer) {
   if (!header) return;
   var lastY = window.scrollY;
   var ticking = false;
+  // After a menu/anchor link is tapped the page auto-scrolls; keep the header
+  // visible through that ride and only resume hiding once the user moves again.
+  var suppress = false;
+  document.addEventListener("click", function (event) {
+    var link = event.target && event.target.closest && event.target.closest('a[href^="#"]');
+    if (link) {
+      suppress = true;
+      header.classList.remove("header-hidden");
+    }
+  }, true);
+  ["wheel", "touchmove", "keydown"].forEach(function (ev) {
+    window.addEventListener(ev, function () { suppress = false; }, { passive: true });
+  });
   function update() {
     var y = Math.max(0, window.scrollY);
-    if (document.body.classList.contains("menu-open") || y < 90) {
+    if (suppress || document.body.classList.contains("menu-open") || y < 90) {
       header.classList.remove("header-hidden");
     } else if (y > lastY + 5) {
       header.classList.add("header-hidden");   // scrolling down

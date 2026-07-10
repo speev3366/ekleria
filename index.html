@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Пекарна Еклерия във Варна - специализирана пекарна за еклери по оригинална рецепта, закуски и поръчки.">
-    <meta name="theme-color" content="#231711">
+    <meta name="theme-color" content="#120a06">
     <title>Пекарна Еклерия | Варна</title>
 
     <!-- Icons -->
@@ -32,8 +32,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260705s">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=gold-noir-14">
 
     <script type="application/ld+json">
     {
@@ -124,12 +124,16 @@
       <a href="#services" data-i18n="nav.services">Услуги</a>
       <a href="#visit" data-i18n="nav.contacts">Контакти</a>
       <a class="button primary mobile-nav-cta" href="#visit" data-contact-cta data-i18n="hero.primary">Посетете ни</a>
+      <div class="mobile-nav-langs" aria-label="Език">
+        <button class="lang active" type="button" data-lang="bg" aria-pressed="true">BG</button>
+        <button class="lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
     </nav>
 
     <main id="top">
       <section class="hero">
-        <img class="hero-video-bg" src="assets/images/optimized/hero-poster.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
-        <video class="hero-video" data-hero-video="main" src="assets/videos/ekleria-video-download.mp4" autoplay muted loop playsinline poster="assets/images/optimized/hero-poster.webp"></video>
+        <img class="hero-video-bg" src="assets/images/optimized/hero-poster-live.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
+        <video class="hero-video" data-hero-video="main" src="assets/videos/ekleria-video-download.mp4" autoplay muted loop playsinline poster="assets/images/optimized/hero-poster-live.webp"></video>
         <div class="hero-shade"></div>
         <div class="hero-content">
           <p class="eyebrow" data-i18n="hero.eyebrow">Специализирана пекарна за Еклери</p>
@@ -281,7 +285,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-caramel.webp" alt="Еклер Карамел">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-caramel.webp" alt="Еклер Карамел">
                   </figure>
                 </div>
               </article>
@@ -294,7 +298,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-pistachio.webp" alt="Еклер Шам фъстък">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-pistachio.webp" alt="Еклер Шам фъстък">
                   </figure>
                 </div>
               </article>
@@ -307,7 +311,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-white-chocolate.webp" alt="Еклер Бял шоколад">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-white-chocolate.webp" alt="Еклер Бял шоколад">
                   </figure>
                 </div>
               </article>
@@ -320,7 +324,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-dark-chocolate.webp" alt="Еклер Тъмен шоколад">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-dark-chocolate.webp" alt="Еклер Тъмен шоколад">
                   </figure>
                 </div>
               </article>
@@ -333,7 +337,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render charcoal-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-charcoal1.webp" alt="Еклер с активен въглен">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-charcoal.webp" alt="Еклер с активен въглен">
                   </figure>
                 </div>
               </article>
@@ -353,7 +357,7 @@
                 <div class="product-spotlight">
                   <div class="spotlight-beam"></div>
                   <figure class="eclair-pedestal boutique-render roll-render">
-                    <img loading="lazy" decoding="async" src="assets/images/optimized/product-alpha-roll.webp" alt="Еклерово руло">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/norm-roll.webp" alt="Еклерово руло">
                   </figure>
                 </div>
               </article>
@@ -485,7 +489,7 @@
           </div>
         </div>
         <figure class="storefront-photo" aria-label="Снимки от Пекарна Еклерия">
-          <img loading="lazy" decoding="async" src="assets/images/optimized/storefront-clean-crop.webp" alt="Пекарна Еклерия отвън">
+          <img loading="lazy" decoding="async" src="assets/images/optimized/storefront-clean-crop2.webp" alt="Пекарна Еклерия отвън">
           <img loading="lazy" decoding="async" src="assets/images/optimized/storefront-interior.webp" alt="Витрината на Пекарна Еклерия">
         </figure>
       </section>
@@ -495,6 +499,6 @@
       <span class="footer-copy" data-i18n="footer.copyright">© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени.</span>
     </footer>
 
-    <script src="script.js?v=20260705h"></script>
+    <script src="script.js?v=gold-noir-2"></script>
   </body>
 </html>
