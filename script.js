@@ -224,6 +224,7 @@ function setLanguage(language) {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
+  if (typeof buildServiceSizers === "function") buildServiceSizers();
   if (typeof renderService === "function") renderService(false);
 }
 
@@ -422,10 +423,25 @@ const heroServices = {
 const servicesTrack = document.querySelector("[data-services-rotator]");
 let servicesIndex = 0;
 
+// Hidden copies of every phrase keep the pill at the width of the longest one,
+// so it never changes size while the texts rotate.
+function buildServiceSizers() {
+  if (!servicesTrack) return;
+  servicesTrack.querySelectorAll(".hero-services-sizer").forEach((el) => el.remove());
+  const list = heroServices[currentLanguage] || heroServices.bg;
+  list.forEach((phrase) => {
+    const sizer = document.createElement("span");
+    sizer.className = "hero-services-text hero-services-sizer";
+    sizer.setAttribute("aria-hidden", "true");
+    sizer.textContent = phrase;
+    servicesTrack.appendChild(sizer);
+  });
+}
+
 function renderService(animate) {
   if (!servicesTrack) return;
   const list = heroServices[currentLanguage] || heroServices.bg;
-  const text = servicesTrack.querySelector(".hero-services-text");
+  const text = servicesTrack.querySelector(".hero-services-text:not(.hero-services-sizer)");
   if (!text) return;
   const next = list[servicesIndex % list.length];
   if (!animate) {
@@ -449,6 +465,7 @@ if (servicesTrack) {
 }
 
 setLanguage(currentLanguage);
+buildServiceSizers();
 renderService(false);
 
 // "Посетете ни" scrolls to the contacts and briefly highlights the phone.

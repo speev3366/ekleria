@@ -666,7 +666,11 @@ body.menu-open .mobile-nav { transform: translateX(0); }
   100% { box-shadow: 0 0 0 0 rgba(232, 181, 99, 0); }
 }
 
-.hero-services-track { display: inline-flex; overflow: hidden; }
+/* The track is a grid that stacks the visible text on top of hidden "sizer"
+   copies of every phrase, so the pill is always as wide as the longest one. */
+.hero-services-track { display: inline-grid; justify-items: center; overflow: hidden; }
+.hero-services-track > * { grid-area: 1 / 1; min-width: 0; max-width: 100%; }
+.hero-services-sizer { visibility: hidden; pointer-events: none; transition: none; }
 
 .hero-services-text {
   font-size: 12.5px;
