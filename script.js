@@ -1,6 +1,94 @@
+/* ============================================================
+   Smart map preview placement. Prefer opening above the trigger,
+   but use the side that fits (or has more free viewport space).
+   Kept first so this small navigation enhancement is isolated from
+   every optional section that follows in the page script.
+   ============================================================ */
+(function initSmartMapPreview() {
+  var wraps = document.querySelectorAll(".visit-map-hover");
+  if (!wraps.length) return;
+
+  function place(wrap) {
+    var popup = wrap.querySelector(".visit-map-popup");
+    var trigger = wrap.querySelector(".visit-map-icon") || wrap;
+    if (!popup || !trigger) return;
+
+    var triggerRect = trigger.getBoundingClientRect();
+    var popupHeight = Math.max(popup.offsetHeight, popup.scrollHeight, 1);
+    var viewportMargin = 16;
+    var popupGap = 14;
+    var needed = popupHeight + popupGap;
+    var spaceAbove = triggerRect.top - viewportMargin;
+    var spaceBelow = window.innerHeight - triggerRect.bottom - viewportMargin;
+    var openBelow = spaceAbove < needed && (spaceBelow >= needed || spaceBelow > spaceAbove);
+
+    wrap.classList.toggle("is-popup-below", openBelow);
+  }
+
+  wraps.forEach(function (wrap) {
+    var trigger = wrap.querySelector(".visit-map-icon");
+    var popup = wrap.querySelector(".visit-map-popup");
+    var schedule = function () {
+      window.requestAnimationFrame(function () { place(wrap); });
+    };
+    wrap.addEventListener("pointerenter", schedule);
+    wrap.addEventListener("focusin", schedule);
+    if (trigger && popup) {
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.addEventListener("click", function (event) {
+        if (!window.matchMedia("(max-width: 980px)").matches) return;
+
+        /* On touch screens the first tap is a preview; a second tap on the
+           same button follows the link to the full Google Maps page. */
+        if (!wrap.classList.contains("is-touch-open")) {
+          event.preventDefault();
+          wraps.forEach(function (other) {
+            other.classList.remove("is-touch-open");
+            var otherTrigger = other.querySelector(".visit-map-icon");
+            var otherPopup = other.querySelector(".visit-map-popup");
+            if (otherTrigger) otherTrigger.setAttribute("aria-expanded", "false");
+            if (otherPopup) otherPopup.setAttribute("aria-hidden", "true");
+          });
+          wrap.classList.add("is-touch-open");
+          trigger.setAttribute("aria-expanded", "true");
+          popup.setAttribute("aria-hidden", "false");
+          schedule();
+        }
+      });
+    }
+    var image = wrap.querySelector(".visit-map-popup img");
+    if (image) {
+      if (image.complete) schedule();
+      else image.addEventListener("load", schedule, { once: true });
+    }
+  });
+
+  document.addEventListener("pointerdown", function (event) {
+    wraps.forEach(function (wrap) {
+      if (!wrap.classList.contains("is-touch-open") || wrap.contains(event.target)) return;
+      wrap.classList.remove("is-touch-open");
+      var trigger = wrap.querySelector(".visit-map-icon");
+      var popup = wrap.querySelector(".visit-map-popup");
+      if (trigger) {
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.blur();
+      }
+      if (popup) popup.setAttribute("aria-hidden", "true");
+    });
+  });
+
+  var refreshOpenPreview = function () {
+    wraps.forEach(function (wrap) {
+      if (wrap.matches(":hover") || wrap.contains(document.activeElement)) place(wrap);
+    });
+  };
+  window.addEventListener("resize", refreshOpenPreview, { passive: true });
+  window.addEventListener("scroll", refreshOpenPreview, { passive: true });
+})();
+
 const translations = {
   bg: {
-    "nav.story": "История",
+    "nav.story": "За нас",
     "nav.selection": "Селекция",
     "nav.products": "Продукти",
     "nav.services": "Услуги",
@@ -8,7 +96,7 @@ const translations = {
     "nav.contacts": "Контакти",
     "hero.eyebrow": "Специализирана пекарна за Еклери",
     "hero.title": "Еклери по оригинална рецепта.",
-    "hero.copy": "Място, в което фокусът е един: различни видове еклери, приготвени на място с истински съставки, неустоим крем и фина глазура.",
+    "hero.copy": "Място, в което фокусът е един: различни видове еклери по оригинална рецепта, приготвени на място с истински съставки, неустоим крем и фина глазура.",
     "hero.primary": "Посетете ни",
     "hero.secondary": "Запознайте се с нас",
     "hero.panelLabel": "Отворено",
@@ -89,6 +177,8 @@ const translations = {
     "services.three.copy": "Зареждаме магазини, кафетерии и сладкарници с печива и десерти за партньори, които търсят постоянство и разпознаваем вкус.",
     "visit.eyebrow": "Посетете ни",
     "visit.title": "гр. Варна, ул. Под Игото 58",
+    "visit.titleLine1": "гр. Варна, ул.",
+    "visit.titleLine2": "Под Игото 58",
     "visit.map": "Виж на картата",
     "review.title": "Оценете ни в Google",
     "review.copy": "Вашата обратна връзка е ценна за нас. Ще се радваме да ни оцените.",
@@ -98,11 +188,12 @@ const translations = {
     "hours.saturday": "Събота",
     "hours.sunday": "Неделя",
     "hours.closed": "Почивен ден",
+    "contact.title": "Форми за контакт",
     "footer.note": "Специализирана пекарна за еклери във Варна.",
     "footer.copyright": "© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени."
   },
   en: {
-    "nav.story": "Story",
+    "nav.story": "About us",
     "nav.selection": "Selection",
     "nav.products": "Products",
     "nav.services": "Services",
@@ -110,7 +201,7 @@ const translations = {
     "nav.contacts": "Contacts",
     "hero.eyebrow": "Specialized eclair bakery",
     "hero.title": "Original-recipe eclairs.",
-    "hero.copy": "A place with one clear focus: different kinds of eclairs prepared on site with real ingredients, irresistible cream and fine glaze.",
+    "hero.copy": "A place with one clear focus: different kinds of original-recipe eclairs, prepared on site with real ingredients, irresistible cream and fine glaze.",
     "hero.primary": "Visit us",
     "hero.secondary": "Meet the bakery",
     "hero.panelLabel": "Open",
@@ -191,6 +282,8 @@ const translations = {
     "services.three.copy": "We supply shops, cafes and patisseries with bakes and desserts for partners looking for consistency and a recognizable flavor.",
     "visit.eyebrow": "Visit us",
     "visit.title": "Varna, 58 Pod Igoto St.",
+    "visit.titleLine1": "Varna,",
+    "visit.titleLine2": "58 Pod Igoto St.",
     "visit.map": "View on the map",
     "review.title": "Rate us on Google",
     "review.copy": "Your feedback matters to us. We'd love your rating.",
@@ -200,6 +293,7 @@ const translations = {
     "hours.saturday": "Saturday",
     "hours.sunday": "Sunday",
     "hours.closed": "Day off",
+    "contact.title": "Contact options",
     "footer.note": "Specialized eclair bakery in Varna.",
     "footer.copyright": "© 2026 Bakery Ekleria. Specialized eclair bakery in Varna. All rights reserved."
   }
@@ -207,6 +301,57 @@ const translations = {
 
 // Default to Bulgarian unless the visitor has explicitly chosen a language before.
 let currentLanguage = localStorage.getItem("ekleria-language") || "bg";
+
+// --- hero intro line: "written-on" reveal (glyph by glyph, like it's being written) ---
+const heroCopyEl = document.querySelector(".hero-copy");
+const reduceMotionMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+let heroCopyTimers = [];
+
+function writeOnHeroCopy(text) {
+  const el = heroCopyEl;
+  if (!el || !text) return;
+
+  heroCopyTimers.forEach(clearTimeout);
+  heroCopyTimers = [];
+
+  // reduced motion (or no support): just show the full line
+  if (reduceMotionMQ.matches) { el.textContent = text; return; }
+
+  el.textContent = "";
+  el.setAttribute("aria-label", text); // screen readers get the whole line at once
+  el.classList.add("is-writing");
+
+  // Split into WORDS with real space text-nodes between them, so the line wraps
+  // naturally on every browser (per-character spans broke wrapping in Safari).
+  const step = 185; // ms per word — slow, deliberate, few words at a time
+  const words = text.split(" ");
+  const spans = [];
+  words.forEach((word, i) => {
+    const s = document.createElement("span");
+    s.className = "tw-word";
+    s.textContent = word;
+    el.appendChild(s);
+    spans.push(s);
+    if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+  });
+
+  const caret = document.createElement("span");
+  caret.className = "tw-caret";
+  caret.setAttribute("aria-hidden", "true");
+  caret.textContent = "|";
+  el.insertBefore(caret, el.firstChild); // caret starts at the very beginning
+
+  spans.forEach((s, i) => {
+    heroCopyTimers.push(setTimeout(() => {
+      s.classList.add("on");
+      s.insertAdjacentElement("afterend", caret); // caret rides just behind the pen
+    }, i * step));
+  });
+  heroCopyTimers.push(setTimeout(() => {
+    el.classList.remove("is-writing");
+    caret.classList.add("done");
+  }, spans.length * step + 500));
+}
 
 function setLanguage(language) {
   currentLanguage = language;
@@ -217,6 +362,9 @@ function setLanguage(language) {
     const value = translations[language][element.dataset.i18n];
     if (value) element.textContent = value;
   });
+
+  // replay the writing effect for the (possibly just-swapped) hero line
+  writeOnHeroCopy(translations[language]["hero.copy"]);
 
   document.querySelectorAll(".lang").forEach((button) => {
     const isActive = button.dataset.lang === language;
@@ -268,40 +416,89 @@ const heroVideos = {
   main: document.querySelector("[data-hero-video='main']")
 };
 
-const heroClips = [
-  { src: "assets/videos/ekleria-video-download.mp4", start: 0, duration: 12000 }
-];
+// Responsive hero clip + resilient autoplay.
+//  - phones load the vertical cut, desktops the wide one (only the matching clip is fetched)
+//  - keeps trying to play through the first-load race, tab switches and
+//    Low Power Mode / battery-saver (which pauses autoplay). It never gives up:
+//    it retries on every readiness event, on visibility, and on the first user gesture.
+const heroSources = {
+  desktop: "assets/videos/home_video_desktop.mp4",
+  mobile: "assets/videos/home_video_mobile.mp4"
+};
 
-let heroClipIndex = 0;
+const heroMobileMQ = window.matchMedia("(max-width: 760px)");
+const wantedHeroSrc = () => (heroMobileMQ.matches ? heroSources.mobile : heroSources.desktop);
 
-function setHeroClip(index) {
-  const clip = heroClips[index % heroClips.length];
-  const source = clip.start ? `${clip.src}#t=${clip.start}` : clip.src;
+function kickHeroVideo(video) {
+  if (!video) return;
+  // re-assert the flags every time — Low Power Mode can clear the effective muted state
+  video.muted = true;
+  video.defaultMuted = true;
+  video.setAttribute("muted", "");
+  video.playsInline = true;
+  video.setAttribute("playsinline", "");
+  video.loop = true;
+  const p = video.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
 
+function applyHeroSource() {
+  const src = wantedHeroSrc();
   Object.values(heroVideos).forEach((video) => {
     if (!video) return;
-    const playHeroVideo = () => {
-      video.muted = true;
-      video.loop = true;
-      video.autoplay = true;
-      video.play().catch(() => {});
-    };
-
-    video.src = source;
-    video.addEventListener("canplay", playHeroVideo, { once: true });
-    video.addEventListener("loadedmetadata", playHeroVideo, { once: true });
-    video.load();
-    playHeroVideo();
+    const cur = video.currentSrc || video.getAttribute("src") || "";
+    if (!cur.endsWith(src)) {
+      video.setAttribute("src", src);
+      video.load();
+    }
+    kickHeroVideo(video);
   });
 }
 
 if (heroVideos.main) {
-  setHeroClip(heroClipIndex);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      Object.values(heroVideos).forEach((video) => video?.play().catch(() => {}));
+  const mainVideo = heroVideos.main;
+
+  applyHeroSource();
+
+  // retry playback on every readiness milestone — this is what fixes the
+  // "black frame until you refresh" first-load race.
+  ["loadedmetadata", "loadeddata", "canplay", "canplaythrough", "stalled", "suspend"].forEach((ev) =>
+    mainVideo.addEventListener(ev, () => kickHeroVideo(mainVideo))
+  );
+
+  // if the system pauses it (Low Power Mode / under-20% battery saver), nudge it back
+  mainVideo.addEventListener("pause", () => {
+    if (!document.hidden && !mainVideo.ended) {
+      setTimeout(() => { if (!document.hidden && mainVideo.paused) kickHeroVideo(mainVideo); }, 250);
     }
   });
+
+  // resume when the tab becomes visible again
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) Object.values(heroVideos).forEach(kickHeroVideo);
+  });
+
+  // battery-saver / autoplay-blocked browsers only permit playback after a user gesture —
+  // resume on the very first interaction of any kind
+  const resumeOnGesture = () => Object.values(heroVideos).forEach(kickHeroVideo);
+  ["pointerdown", "touchstart", "click", "keydown", "scroll"].forEach((ev) =>
+    window.addEventListener(ev, resumeOnGesture, { passive: true })
+  );
+
+  // keep the two device cuts in sync when crossing the phone/desktop breakpoint
+  if (heroMobileMQ.addEventListener) heroMobileMQ.addEventListener("change", applyHeroSource);
+  else if (heroMobileMQ.addListener) heroMobileMQ.addListener(applyHeroSource);
+
+  // one more attempt after full load
+  window.addEventListener("load", () => kickHeroVideo(mainVideo));
+
+  // short watchdog: if it still hasn't started shortly after load, keep trying for a few seconds
+  let kicks = 0;
+  const heroWatchdog = setInterval(() => {
+    kicks += 1;
+    if (mainVideo.paused && !document.hidden) kickHeroVideo(mainVideo);
+    if ((!mainVideo.paused && mainVideo.currentTime > 0) || kicks > 14) clearInterval(heroWatchdog);
+  }, 700);
 }
 
 // Play each video only while it is on screen. This keeps the number of
@@ -335,7 +532,7 @@ let productTicking = false;
 function refreshProductStageMetrics() {
   if (!productTrack) return;
   productSlides = Array.from(productTrack.children);
-  productMaxTranslate = Math.max(productTrack.scrollWidth - window.innerWidth, 0);
+  productMaxTranslate = Math.max(productTrack.scrollWidth - productTrack.clientWidth, 0);
 }
 
 function updateProductStage() {
@@ -728,6 +925,9 @@ if (atelierPlayer) {
   if (!header) return;
   var lastY = window.scrollY;
   var ticking = false;
+  var introDismissed = window.scrollY > 1;
+  var wheelGestureLocked = false;
+  var wheelGestureTimer = 0;
   // After a menu/anchor link is tapped the page auto-scrolls; keep the header
   // visible through that ride and only resume hiding once the user moves again.
   var suppress = false;
@@ -738,12 +938,43 @@ if (atelierPlayer) {
       header.classList.remove("header-hidden");
     }
   }, true);
-  ["wheel", "touchmove", "keydown"].forEach(function (ev) {
+  ["touchmove", "keydown"].forEach(function (ev) {
     window.addEventListener(ev, function () { suppress = false; }, { passive: true });
   });
+
+  function finishIntroWheelGestureSoon() {
+    window.clearTimeout(wheelGestureTimer);
+    wheelGestureTimer = window.setTimeout(function () {
+      wheelGestureLocked = false;
+    }, 180);
+  }
+
+  /* At the very top, the first downward mouse-wheel gesture dismisses only
+     the floating navigation. A fresh second gesture starts page movement. */
+  window.addEventListener("wheel", function (event) {
+    suppress = false;
+    if (window.innerWidth <= 980 || event.deltaY <= 0) return;
+
+    if (wheelGestureLocked) {
+      event.preventDefault();
+      finishIntroWheelGestureSoon();
+      return;
+    }
+
+    if (window.scrollY <= 1 && !header.classList.contains("header-hidden")) {
+      event.preventDefault();
+      introDismissed = true;
+      wheelGestureLocked = true;
+      header.classList.add("header-hidden");
+      finishIntroWheelGestureSoon();
+    }
+  }, { passive: false });
+
   function update() {
     var y = Math.max(0, window.scrollY);
-    if (suppress || document.body.classList.contains("menu-open") || y < 90) {
+    if (y <= 1 && y < lastY) introDismissed = false;
+
+    if (suppress || document.body.classList.contains("menu-open") || (y <= 1 && !introDismissed)) {
       header.classList.remove("header-hidden");
     } else if (y > lastY + 5) {
       header.classList.add("header-hidden");   // scrolling down
