@@ -302,10 +302,23 @@ const translations = {
 // Default to Bulgarian unless the visitor has explicitly chosen a language before.
 let currentLanguage = localStorage.getItem("ekleria-language") || "bg";
 
-// --- hero intro line: "written-on" reveal (glyph by glyph, like it's being written) ---
+// --- hero intro line: a fast, fluid glyph reveal with stable word wrapping ---
 const heroCopyEl = document.querySelector(".hero-copy");
 const reduceMotionMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
 let heroCopyTimers = [];
+let heroCopyRun = 0;
+
+// The Google face is stylesheet-defined but its binary may still be in flight
+// during the first paint. Resolve only when Montserrat is usable; after the
+// timeout, pin this line to the fallback so it cannot swap underneath the user.
+const heroCopyFontReady = document.fonts && document.fonts.load
+  ? Promise.race([
+      document.fonts.load('600 18px "Montserrat"')
+        .then((faces) => faces.length > 0)
+        .catch(() => false),
+      new Promise((resolve) => setTimeout(() => resolve(false), 2500))
+    ])
+  : Promise.resolve(false);
 
 function writeOnHeroCopy(text) {
   const el = heroCopyEl;
@@ -313,44 +326,66 @@ function writeOnHeroCopy(text) {
 
   heroCopyTimers.forEach(clearTimeout);
   heroCopyTimers = [];
+  const run = ++heroCopyRun;
+
+  el.classList.add("is-font-pending");
+  heroCopyFontReady.then((fontLoaded) => {
+    if (run !== heroCopyRun) return;
+    el.classList.toggle("font-fallback", !fontLoaded);
+    el.classList.remove("is-font-pending");
+    renderHeroCopy(text, run);
+  });
+}
+
+function renderHeroCopy(text, run) {
+  const el = heroCopyEl;
+  if (!el || run !== heroCopyRun) return;
 
   // reduced motion (or no support): just show the full line
-  if (reduceMotionMQ.matches) { el.textContent = text; return; }
+  if (reduceMotionMQ.matches) {
+    el.classList.remove("is-queued", "is-writing");
+    el.textContent = text;
+    return;
+  }
 
+  el.classList.remove("is-writing");
   el.textContent = "";
   el.setAttribute("aria-label", text); // screen readers get the whole line at once
-  el.classList.add("is-writing");
 
-  // Split into WORDS with real space text-nodes between them, so the line wraps
-  // naturally on every browser (per-character spans broke wrapping in Safari).
-  const step = 185; // ms per word — slow, deliberate, few words at a time
+  // Each word stays as one wrapping unit, while its glyphs flow in rapidly.
+  // This keeps Safari line wrapping stable without the old word-by-word jumps.
   const words = text.split(" ");
-  const spans = [];
+  let glyphIndex = 0;
   words.forEach((word, i) => {
-    const s = document.createElement("span");
-    s.className = "tw-word";
-    s.textContent = word;
-    el.appendChild(s);
-    spans.push(s);
+    const wordSpan = document.createElement("span");
+    wordSpan.className = "tw-word";
+    Array.from(word).forEach((glyph) => {
+      const glyphSpan = document.createElement("span");
+      glyphSpan.className = "tw-char";
+      glyphSpan.textContent = glyph;
+      glyphSpan.style.setProperty("--tw-index", glyphIndex++);
+      wordSpan.appendChild(glyphSpan);
+    });
+    el.appendChild(wordSpan);
     if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
   });
 
-  const caret = document.createElement("span");
-  caret.className = "tw-caret";
-  caret.setAttribute("aria-hidden", "true");
-  caret.textContent = "|";
-  el.insertBefore(caret, el.firstChild); // caret starts at the very beginning
-
-  spans.forEach((s, i) => {
-    heroCopyTimers.push(setTimeout(() => {
-      s.classList.add("on");
-      s.insertAdjacentElement("afterend", caret); // caret rides just behind the pen
-    }, i * step));
-  });
-  heroCopyTimers.push(setTimeout(() => {
-    el.classList.remove("is-writing");
-    caret.classList.add("done");
-  }, spans.length * step + 500));
+  // Keep the glyphs queued until the interface has painted. Starting the
+  // sequence during initial parsing made it finish behind the loading frame.
+  el.classList.add("is-queued");
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (run !== heroCopyRun) return;
+    const startTimer = setTimeout(() => {
+      if (run !== heroCopyRun) return;
+      el.classList.remove("is-queued");
+      el.classList.add("is-writing");
+      const finishTimer = setTimeout(() => {
+        if (run === heroCopyRun) el.classList.remove("is-writing");
+      }, glyphIndex * 40 + 560);
+      heroCopyTimers.push(finishTimer);
+    }, 220);
+    heroCopyTimers.push(startTimer);
+  }));
 }
 
 function setLanguage(language) {
@@ -422,12 +457,17 @@ const heroVideos = {
 //    Low Power Mode / battery-saver (which pauses autoplay). It never gives up:
 //    it retries on every readiness event, on visibility, and on the first user gesture.
 const heroSources = {
-  desktop: "assets/videos/home_video_desktop.mp4",
+  desktopHd: "assets/videos/home_video_desktop_hd.mp4",
+  desktopSafe: "assets/videos/home_video_desktop.mp4",
   mobile: "assets/videos/home_video_mobile.mp4"
 };
 
 const heroMobileMQ = window.matchMedia("(max-width: 760px)");
-const wantedHeroSrc = () => (heroMobileMQ.matches ? heroSources.mobile : heroSources.desktop);
+const isSafariBrowser = /^((?!chrome|chromium|android|crios|fxios|edgios).)*safari/i.test(navigator.userAgent);
+const wantedHeroSrc = () => {
+  if (heroMobileMQ.matches) return heroSources.mobile;
+  return isSafariBrowser ? heroSources.desktopSafe : heroSources.desktopHd;
+};
 
 function kickHeroVideo(video) {
   if (!video) return;
@@ -686,14 +726,15 @@ document.querySelectorAll(".visit-review-qr").forEach((link) => {
 
 const atelierPlayer = document.querySelector("[data-atelier-player]");
 const atelierPlaylist = [
-  "assets/videos/aterlier-0.mp4",
   "assets/videos/atelier-1.mp4",
+  "assets/videos/aterlier-0.mp4",
+  "assets/videos/atelier-3.mp4",
   "assets/videos/atelier-2.mp4",
-  "assets/videos/atelier-3.mp4"
 ];
 let atelierIndex = 0;
 
 if (atelierPlayer) {
+  atelierPlayer.src = atelierPlaylist[0];
   const atCount = document.querySelector("[data-atelier-count]");
   const atPP = document.querySelector("[data-atelier-playpause]");
 
@@ -749,7 +790,6 @@ if (atelierPlayer) {
       ".service-list article",
       ".visit-card",
       ".visit-aside > *",
-      ".storefront-photo",
       ".video-player",
       ".products-overview"
     ];
@@ -928,6 +968,11 @@ if (atelierPlayer) {
   var introDismissed = window.scrollY > 1;
   var wheelGestureLocked = false;
   var wheelGestureTimer = 0;
+  var wheelIntent = "";
+  var wheelIntentUntil = 0;
+  var touchY = null;
+  var touchIntent = "";
+  var touchIntentUntil = 0;
   // After a menu/anchor link is tapped the page auto-scrolls; keep the header
   // visible through that ride and only resume hiding once the user moves again.
   var suppress = false;
@@ -942,6 +987,32 @@ if (atelierPlayer) {
     window.addEventListener(ev, function () { suppress = false; }, { passive: true });
   });
 
+  /* Mobile Safari/Chrome can batch small scroll deltas, so the generic
+     five-pixel threshold sometimes misses the first reverse swipe. Read the
+     finger direction directly and reveal the header on that first upward
+     intent, before momentum scrolling has finished. */
+  window.addEventListener("touchstart", function (event) {
+    if (window.innerWidth > 980 || !event.touches.length) return;
+    touchY = event.touches[0].clientY;
+    suppress = false;
+  }, { passive: true });
+
+  window.addEventListener("touchmove", function (event) {
+    if (window.innerWidth > 980 || touchY === null || !event.touches.length) return;
+    var nextTouchY = event.touches[0].clientY;
+    var delta = nextTouchY - touchY;
+    if (Math.abs(delta) < 3) return;
+
+    touchIntent = delta > 0 ? "up" : "down";
+    touchIntentUntil = performance.now() + 260;
+    if (!document.body.classList.contains("menu-open")) {
+      header.classList.toggle("header-hidden", touchIntent === "down");
+    }
+    touchY = nextTouchY;
+  }, { passive: true });
+
+  window.addEventListener("touchend", function () { touchY = null; }, { passive: true });
+
   function finishIntroWheelGestureSoon() {
     window.clearTimeout(wheelGestureTimer);
     wheelGestureTimer = window.setTimeout(function () {
@@ -953,6 +1024,24 @@ if (atelierPlayer) {
      the floating navigation. A fresh second gesture starts page movement. */
   window.addEventListener("wheel", function (event) {
     suppress = false;
+    var headerWasHidden = header.classList.contains("header-hidden");
+    if (Math.abs(event.deltaY) >= 1) {
+      wheelIntent = event.deltaY > 0 ? "down" : "up";
+      wheelIntentUntil = performance.now() + 260;
+
+      if (!document.body.classList.contains("menu-open")) {
+        header.classList.toggle("header-hidden", wheelIntent === "down");
+      }
+    }
+
+    /* A single reverse gesture must reveal the navigation immediately. It
+       must not wait for the page to accumulate several pixels of movement. */
+    if (event.deltaY < 0) {
+      wheelGestureLocked = false;
+      header.classList.remove("header-hidden");
+      return;
+    }
+
     if (window.innerWidth <= 980 || event.deltaY <= 0) return;
 
     if (wheelGestureLocked) {
@@ -961,7 +1050,7 @@ if (atelierPlayer) {
       return;
     }
 
-    if (window.scrollY <= 1 && !header.classList.contains("header-hidden")) {
+    if (window.scrollY <= 1 && !headerWasHidden) {
       event.preventDefault();
       introDismissed = true;
       wheelGestureLocked = true;
@@ -974,11 +1063,25 @@ if (atelierPlayer) {
     var y = Math.max(0, window.scrollY);
     if (y <= 1 && y < lastY) introDismissed = false;
 
+    if (performance.now() < wheelIntentUntil && wheelIntent) {
+      header.classList.toggle("header-hidden", wheelIntent === "down");
+      lastY = y;
+      ticking = false;
+      return;
+    }
+
+    if (window.innerWidth <= 980 && performance.now() < touchIntentUntil && touchIntent) {
+      header.classList.toggle("header-hidden", touchIntent === "down");
+      lastY = y;
+      ticking = false;
+      return;
+    }
+
     if (suppress || document.body.classList.contains("menu-open") || (y <= 1 && !introDismissed)) {
       header.classList.remove("header-hidden");
-    } else if (y > lastY + 5) {
+    } else if (y > lastY + .5) {
       header.classList.add("header-hidden");   // scrolling down
-    } else if (y < lastY - 5) {
+    } else if (y < lastY - .5) {
       header.classList.remove("header-hidden"); // scrolling up
     }
     lastY = y;
