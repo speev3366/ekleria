@@ -2745,15 +2745,26 @@ html.js-reveal [data-reveal].is-visible {
    desktop polish — unified section kickers, alignment & rhythm
    ============================================================ */
 @media (min-width: 981px) {
+  /* Match the exact horizontal frame used by the product stage. These three
+     desktop panels now keep the same distance from the golden edge stripes,
+     including when the browser is zoomed in or out. */
+  .other-products,
+  .service-list,
+  .visit-card {
+    margin-inline: calc(var(--stripe-w) * .85 - var(--page-pad));
+  }
+
   /* Four genuinely aligned submenus: location / hours, review / contacts. */
   .visit-grid {
     --visit-bottom-row: clamp(306px, 16.5vw, 320px);
+    width: min(100%, 1260px);
+    align-self: center;
     grid-template-columns: repeat(2, minmax(0, 475px));
     grid-template-rows: auto var(--visit-bottom-row);
     grid-template-areas:
       "main hours"
       "review contact";
-    justify-content: center;
+    justify-content: space-between;
     column-gap: clamp(54px, 5vw, 76px);
     row-gap: 24px;
     align-items: stretch;
