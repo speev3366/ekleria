@@ -2368,7 +2368,7 @@ html.js-reveal [data-reveal].is-visible {
     right: auto;
     z-index: 50;
     width: min(300px, calc(100vw - 48px));
-    translate: -50% 0;
+    translate: calc(-50% + var(--map-popup-shift-x, 0px)) 0;
   }
   .visit-map-hover.is-touch-open .visit-map-popup {
     opacity: 1;
@@ -2563,6 +2563,50 @@ html.js-reveal [data-reveal].is-visible {
 
   .visit-card { padding-inline: clamp(18px, 5.5vw, 24px); }
   .visit-panel { padding-inline: clamp(14px, 4vw, 20px); }
+
+  /* Use the full available line without pushing 58 onto a second row. */
+  .visit-card {
+    --visit-mobile-title-size: clamp(1.05rem, 5.55vw, 1.42rem);
+  }
+  .visit-main .visit-address-title {
+    width: max-content;
+    max-width: 100%;
+    font-size: var(--visit-mobile-title-size);
+    letter-spacing: -.012em;
+    white-space: nowrap;
+  }
+  .visit-address-title span { white-space: inherit; }
+
+  /* Keep the address centred, but align the map button with the copy column. */
+  .visit-address-row {
+    width: 100%;
+    max-width: 100%;
+    align-self: stretch;
+    justify-items: start;
+  }
+  .visit-main .visit-address-title { justify-self: center; }
+  .visit-address-row .visit-map-hover {
+    justify-self: start;
+  }
+  .visit-address-row .visit-map-icon {
+    height: 39px;
+    gap: 7px;
+    padding: 8px 12px;
+    font-size: 9.3px;
+  }
+
+  .visit-location-panel .visit-copy {
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    hyphens: none;
+  }
+
+  .hours > h3 {
+    font-family: var(--serif);
+    font-size: var(--visit-mobile-title-size);
+    letter-spacing: -.012em;
+  }
 
   /* section kickers stay on ONE line on phones (shorter dashes, tighter spacing) */
   .section .eyebrow { letter-spacing: .18em; }

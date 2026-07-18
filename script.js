@@ -14,6 +14,17 @@
     if (!popup || !trigger) return;
 
     var triggerRect = trigger.getBoundingClientRect();
+    var mobilePreview = window.matchMedia("(max-width: 980px)").matches;
+    var locationPanel = wrap.closest(".visit-location-panel");
+    if (mobilePreview && locationPanel) {
+      var wrapRect = wrap.getBoundingClientRect();
+      var panelRect = locationPanel.getBoundingClientRect();
+      var popupShift = (panelRect.left + panelRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+      popup.style.setProperty("--map-popup-shift-x", popupShift.toFixed(2) + "px");
+    } else {
+      popup.style.removeProperty("--map-popup-shift-x");
+    }
+
     var popupHeight = Math.max(popup.offsetHeight, popup.scrollHeight, 1);
     var viewportMargin = 16;
     var popupGap = 14;
@@ -464,9 +475,12 @@ const heroSources = {
 
 const heroMobileMQ = window.matchMedia("(max-width: 760px)");
 const isSafariBrowser = /^((?!chrome|chromium|android|crios|fxios|edgios).)*safari/i.test(navigator.userAgent);
+let heroDesktopFallbackActive = false;
 const wantedHeroSrc = () => {
   if (heroMobileMQ.matches) return heroSources.mobile;
-  return isSafariBrowser ? heroSources.desktopSafe : heroSources.desktopHd;
+  return (isSafariBrowser || heroDesktopFallbackActive)
+    ? heroSources.desktopSafe
+    : heroSources.desktopHd;
 };
 
 function kickHeroVideo(video) {
@@ -497,6 +511,16 @@ function applyHeroSource() {
 
 if (heroVideos.main) {
   const mainVideo = heroVideos.main;
+
+  // A partial deployment must not leave Chrome frozen on the poster. If the
+  // preferred HD file is missing or cannot be decoded, switch once to the
+  // widely compatible desktop file that is also declared in the HTML.
+  mainVideo.addEventListener("error", () => {
+    const failedSrc = mainVideo.currentSrc || mainVideo.getAttribute("src") || "";
+    if (heroMobileMQ.matches || heroDesktopFallbackActive || !failedSrc.includes("home_video_desktop_hd.mp4")) return;
+    heroDesktopFallbackActive = true;
+    applyHeroSource();
+  });
 
   applyHeroSource();
 
