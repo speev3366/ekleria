@@ -2577,7 +2577,7 @@ html.js-reveal [data-reveal].is-visible {
   }
   .visit-address-title span { white-space: inherit; }
 
-  /* Keep the address centred, but align the map button with the copy column. */
+  /* Keep the address and its map action centred as one visual group. */
   .visit-address-row {
     width: 100%;
     max-width: 100%;
@@ -2586,13 +2586,15 @@ html.js-reveal [data-reveal].is-visible {
   }
   .visit-main .visit-address-title { justify-self: center; }
   .visit-address-row .visit-map-hover {
-    justify-self: start;
+    justify-self: center;
+    margin-top: 0;
   }
+  .visit-address-row h2 { margin-bottom: 14px; }
   .visit-address-row .visit-map-icon {
-    height: 39px;
-    gap: 7px;
-    padding: 8px 12px;
-    font-size: 9.3px;
+    height: 37px;
+    gap: 6.65px;
+    padding: 7.6px 11.4px;
+    font-size: 8.84px;
   }
 
   .visit-location-panel .visit-copy {
