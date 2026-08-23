@@ -174,7 +174,7 @@ const translations = {
     "otherProducts.copy": "Закуски и сезонни предложения присъстват като допълнение към основния фокус на Еклерия: еклерите.",
     "atelier.eyebrow": "В ателието",
     "atelier.title": "Кадрите са част от вкуса.",
-    "atelier.copy": "Три кратки кадъра от ателието: кремът, глазурата и финалният детайл. Всичко се приготвя на място - внимателно, чисто и с характер.",
+    "atelier.copy": "Четири кратки кадъра от ателието: кремът, глазурата, еклерът с активен въглен и финалният детайл. Всичко се приготвя на място — внимателно, чисто и с характер. За вашия специален повод създаваме и еклери по поръчка.",
     "gallery.eyebrow": "Галерия",
     "gallery.title": "Гланц, крем и характер.",
     "services.eyebrow": "Услуги",
@@ -279,7 +279,7 @@ const translations = {
     "otherProducts.copy": "Breakfast pastries and seasonal items appear as an addition to Ekleria's main focus: eclairs.",
     "atelier.eyebrow": "In the atelier",
     "atelier.title": "The footage is part of the flavor.",
-    "atelier.copy": "Three short glimpses from the atelier: cream, glaze and the final detail. Everything is prepared on site - carefully, cleanly and with character.",
+    "atelier.copy": "Four short glimpses from the atelier: the cream, the glaze, our signature activated-charcoal eclair, and the final detail. Everything is prepared on site — with care, precision, and character. We also create made-to-order eclairs for your special occasion.",
     "gallery.eyebrow": "Gallery",
     "gallery.title": "Gloss, cream and character.",
     "services.eyebrow": "Services",
@@ -888,17 +888,26 @@ const atelierPlaylist = [
 ];
 /* Which band of the portrait frame the wide crop keeps. 50% is the middle;
    a lower number slides the picture down, a higher one lifts it up. */
-const atelierFraming = {
-  "atelier-2.mp4": "42%",   // slid down, to match the band drawn on the frame
-};
-/* Fit the portrait clip first, then enlarge it around its center. This keeps
-   the player intact while reducing the empty space on both sides. */
+const atelierFraming = {};
+/* Fit the portrait clips first, then enlarge them around their center. This
+   keeps the player intact while reducing the empty space on both sides. */
 const atelierFit = {
+  "atelier-1.mp4": "contain",
+  "atelier-0.mp4": "contain",
   "atelier-3.mp4": "contain",
+  "atelier-2.mp4": "contain",
 };
 const atelierScale = {
-  "atelier-3.mp4": "2.5",
+  "atelier-1.mp4": "2.5",
+  "atelier-0.mp4": "2.5",
+  "atelier-3.mp4": "2.8",
+  "atelier-2.mp4": "2.5",
 };
+const atelierDesktopOnlyZoom = new Set([
+  "atelier-1.mp4",
+  "atelier-0.mp4",
+]);
+const atelierMobileLayoutMQ = window.matchMedia("(max-width: 640px)");
 let atelierIndex = 0;
 
 if (atelierPlayer) {
@@ -906,10 +915,15 @@ if (atelierPlayer) {
   const atPP = document.querySelector("[data-atelier-playpause]");
   function atFrame(src) {
     const name = src.split("/").pop();
+    const keepMobileFraming = atelierMobileLayoutMQ.matches && atelierDesktopOnlyZoom.has(name);
     atelierPlayer.style.setProperty("--atelier-y", atelierFraming[name] || "50%");
-    atelierPlayer.style.setProperty("--atelier-fit", atelierFit[name] || "cover");
-    atelierPlayer.style.setProperty("--atelier-scale", atelierScale[name] || "1");
+    atelierPlayer.style.setProperty("--atelier-fit", keepMobileFraming ? "cover" : (atelierFit[name] || "cover"));
+    atelierPlayer.style.setProperty("--atelier-scale", keepMobileFraming ? "1" : (atelierScale[name] || "1"));
   }
+
+  const refreshAtelierFrame = () => atFrame(atelierPlaylist[atelierIndex]);
+  if (atelierMobileLayoutMQ.addEventListener) atelierMobileLayoutMQ.addEventListener("change", refreshAtelierFrame);
+  else if (atelierMobileLayoutMQ.addListener) atelierMobileLayoutMQ.addListener(refreshAtelierFrame);
 
   atelierPlayer.src = atelierPlaylist[0];
   atFrame(atelierPlaylist[0]);

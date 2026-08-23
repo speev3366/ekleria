@@ -1105,6 +1105,8 @@ body.menu-open .mobile-nav { transform: translateX(0); }
 /* Keep one stable player frame for every clip. The extra-tall third clip uses
    `contain` plus a centered scale to balance its crop and the side spacing. */
 .video-player video {
+  position: relative;
+  z-index: 0;
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: var(--atelier-fit, cover);
@@ -1118,6 +1120,7 @@ body.menu-open .mobile-nav { transform: translateX(0); }
 
 .atelier-count {
   position: absolute;
+  z-index: 2;
   top: 18px;
   right: 18px;
   padding: 8px 16px;
@@ -1135,6 +1138,7 @@ body.menu-open .mobile-nav { transform: translateX(0); }
 .atelier-nav,
 .atelier-pp {
   position: absolute;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   justify-content: center;
