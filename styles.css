@@ -1102,10 +1102,16 @@ body.menu-open .mobile-nav { transform: translateX(0); }
   box-shadow: 0 40px 110px rgba(0, 0, 0, .55), var(--glow-gold);
 }
 
+/* Keep one stable player frame for every clip. The extra-tall third clip uses
+   `contain` plus a centered scale to balance its crop and the side spacing. */
 .video-player video {
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: var(--atelier-fit, cover);
+  /* which band of the portrait frame the crop keeps; per clip, see script.js */
+  object-position: center var(--atelier-y, 50%);
+  transform: scale(var(--atelier-scale, 1));
+  transform-origin: center;
   cursor: pointer;
   background: #0a0603;
 }

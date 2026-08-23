@@ -106,7 +106,7 @@ const translations = {
     "nav.visit": "Посетете ни",
     "nav.contacts": "Контакти",
     "hero.eyebrow": "Специализирана пекарна за Еклери",
-    "hero.title": "Еклери по оригинална рецепта.",
+    "hero.title": "Пресни еклери във Варна",
     "hero.copy": "Място, в което фокусът е един: различни видове еклери по оригинална рецепта, приготвени на място с истински съставки, неустоим крем и фина глазура.",
     "hero.primary": "Посетете ни",
     "hero.secondary": "Запознайте се с нас",
@@ -445,6 +445,122 @@ if (menuToggle && mobileNav) {
   });
 }
 
+/* In-page navigation.
+   Images further down the page load lazily, so the document keeps growing while
+   a scroll is still in flight. The browser aims at the offset the target had
+   when the link was clicked, so every jump landed short — "Контакти" stopped at
+   the end of the services section. Re-aim until the target stops moving. */
+function anchorOffset() {
+  const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 82;
+  return headerH + 14;
+}
+
+function resolveAnchor(hash) {
+  if (hash === "#visit" && window.innerWidth <= 980) {
+    /* The visit card is taller than a phone screen, so landing on its top edge
+       showed the address and the contact forms with nothing between them.
+       Frame it on the opening hours instead: address above, contacts below. */
+    const hours = document.querySelector(".visit-panel.hours");
+    if (hours) return { el: hours, centre: true };
+  }
+  const el = document.querySelector(hash);
+  return el ? { el, centre: false } : null;
+}
+
+function anchorTop(entry) {
+  const rect = entry.el.getBoundingClientRect();
+  const inset = entry.centre
+    ? Math.max(anchorOffset(), (window.innerHeight - rect.height) / 2)
+    : anchorOffset();
+  const limit = document.documentElement.scrollHeight - window.innerHeight;
+  return Math.max(0, Math.min(rect.top + window.scrollY - inset, limit));
+}
+
+/* Everything we scroll past would load on the way anyway, so starting those
+   images now makes the target settle in one glide instead of creeping down. */
+function preloadAbove(target) {
+  const reach = target + window.innerHeight;
+  document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+    if (img.getBoundingClientRect().top + window.scrollY <= reach) img.loading = "eager";
+  });
+}
+
+let cancelAnchorScroll = null;
+
+function scrollToAnchor(hash) {
+  const entry = resolveAnchor(hash);
+  if (!entry) return false;
+
+  // a second link must take over, not wrestle the first one for the scrollbar
+  if (cancelAnchorScroll) cancelAnchorScroll();
+
+  preloadAbove(anchorTop(entry));
+
+  // touchmove, not touchstart: the tap that asks for the scroll must not cancel it
+  const gestures = ["wheel", "touchmove", "keydown"];
+  const root = document.documentElement;
+  const from = window.scrollY;
+  const started = performance.now();
+  const span = Math.min(900, Math.max(420, Math.abs(anchorTop(entry) - from) * 0.35));
+  const hardStop = started + 10000;
+  let settleUntil = 0;
+  let frame = 0;
+  let done = false;
+
+  function finish() {
+    done = true;
+    window.cancelAnimationFrame(frame);
+    root.style.scrollBehavior = "";
+    gestures.forEach((type) => window.removeEventListener(type, finish));
+    if (cancelAnchorScroll === finish) cancelAnchorScroll = null;
+  }
+
+  /* Driven frame by frame rather than handed to the browser as one smooth
+     scrollTo. The destination is recomputed every frame, so images loading
+     higher up can no longer leave the page parked short of the section, and a
+     frame lost to the closing menu overlay simply corrects itself. */
+  function step(now) {
+    if (done) return;
+    const want = anchorTop(entry);
+    const progress = Math.min(1, (now - started) / span);
+
+    if (progress < 1) {
+      const eased = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      window.scrollTo(0, from + (want - from) * eased);
+    } else {
+      /* Arrived: keep the element pinned. Anything that loads above shifts the
+         target, and following it exactly is what keeps the section framed. */
+      const drift = want - window.scrollY;
+      window.scrollTo(0, want);
+      if (!settleUntil) settleUntil = now + 1200;
+      if (Math.abs(drift) > 2) settleUntil = Math.max(settleUntil, now + 600);
+      if (now > settleUntil || now > hardStop) return finish();
+    }
+
+    frame = window.requestAnimationFrame(step);
+  }
+
+  gestures.forEach((type) => window.addEventListener(type, finish, { passive: true, once: true }));
+  cancelAnchorScroll = finish;
+  root.style.scrollBehavior = "auto";
+  frame = window.requestAnimationFrame(step);
+
+  return true;
+}
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest('a[href^="#"]');
+  // the product links run their own slide-aware scrolling
+  if (!link || link.dataset.productTarget !== undefined) return;
+  const hash = link.getAttribute("href");
+  if (hash.length < 2 || !scrollToAnchor(hash)) return;
+  event.preventDefault();
+  // keep the back button working the way a plain anchor would
+  if (location.hash !== hash) history.pushState(null, "", hash);
+});
+
 document.querySelectorAll(".lang").forEach((button) => {
   button.addEventListener("click", () => setLanguage(button.dataset.lang));
 });
@@ -483,6 +599,15 @@ const wantedHeroSrc = () => {
     : heroSources.desktopHd;
 };
 
+/* Only ever restart a clip the visitor can actually see. Reviving the hero
+   while it is scrolled away burns battery for nothing and holds on to one of
+   the few video decoders iOS Safari hands out, which is what left the atelier
+   player sitting on a black frame. */
+function videoOnScreen(video) {
+  const rect = video.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
 function kickHeroVideo(video) {
   if (!video) return;
   // re-assert the flags every time — Low Power Mode can clear the effective muted state
@@ -492,6 +617,7 @@ function kickHeroVideo(video) {
   video.playsInline = true;
   video.setAttribute("playsinline", "");
   video.loop = true;
+  if (!videoOnScreen(video)) return;
   const p = video.play();
   if (p && typeof p.catch === "function") p.catch(() => {});
 }
@@ -542,10 +668,12 @@ if (heroVideos.main) {
     if (!document.hidden) Object.values(heroVideos).forEach(kickHeroVideo);
   });
 
-  // battery-saver / autoplay-blocked browsers only permit playback after a user gesture —
-  // resume on the very first interaction of any kind
+  /* iOS Low Power Mode refuses autoplay outright and only lets a video start
+     from a real user gesture, so play() has to be called straight out of the
+     handler. Scrolling is not a gesture the platform accepts, and it fires
+     constantly, so the listeners below are the discrete ones that do count. */
   const resumeOnGesture = () => Object.values(heroVideos).forEach(kickHeroVideo);
-  ["pointerdown", "touchstart", "click", "keydown", "scroll"].forEach((ev) =>
+  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((ev) =>
     window.addEventListener(ev, resumeOnGesture, { passive: true })
   );
 
@@ -580,7 +708,10 @@ if ("IntersectionObserver" in window) {
         video.pause();
       }
     });
-  }, { threshold: 0.2 });
+  /* The third atelier clip is visually scaled inside an overflow-hidden frame.
+     Its visible intersection is about 16%, so 10% still means "on screen"
+     while allowing that clip to start normally. */
+  }, { threshold: 0.1 });
 
   document.querySelectorAll("video").forEach((video) => videoObserver.observe(video));
 }
@@ -751,22 +882,55 @@ document.querySelectorAll(".visit-review-qr").forEach((link) => {
 const atelierPlayer = document.querySelector("[data-atelier-player]");
 const atelierPlaylist = [
   "assets/videos/atelier-1.mp4",
-  "assets/videos/aterlier-0.mp4",
+  "assets/videos/atelier-0.mp4",
   "assets/videos/atelier-3.mp4",
   "assets/videos/atelier-2.mp4",
 ];
+/* Which band of the portrait frame the wide crop keeps. 50% is the middle;
+   a lower number slides the picture down, a higher one lifts it up. */
+const atelierFraming = {
+  "atelier-2.mp4": "42%",   // slid down, to match the band drawn on the frame
+};
+/* Fit the portrait clip first, then enlarge it around its center. This keeps
+   the player intact while reducing the empty space on both sides. */
+const atelierFit = {
+  "atelier-3.mp4": "contain",
+};
+const atelierScale = {
+  "atelier-3.mp4": "2.5",
+};
 let atelierIndex = 0;
 
 if (atelierPlayer) {
-  atelierPlayer.src = atelierPlaylist[0];
   const atCount = document.querySelector("[data-atelier-count]");
   const atPP = document.querySelector("[data-atelier-playpause]");
+  function atFrame(src) {
+    const name = src.split("/").pop();
+    atelierPlayer.style.setProperty("--atelier-y", atelierFraming[name] || "50%");
+    atelierPlayer.style.setProperty("--atelier-fit", atelierFit[name] || "cover");
+    atelierPlayer.style.setProperty("--atelier-scale", atelierScale[name] || "1");
+  }
+
+  atelierPlayer.src = atelierPlaylist[0];
+  atFrame(atelierPlaylist[0]);
 
   function atLoad(index) {
     atelierIndex = (index + atelierPlaylist.length) % atelierPlaylist.length;
-    atelierPlayer.src = atelierPlaylist[atelierIndex];
+    const nextSrc = atelierPlaylist[atelierIndex];
+    atelierPlayer.src = nextSrc;
+    atFrame(nextSrc);
+
+    // A source change can interrupt the immediate play() request in some
+    // browsers. Retry once the selected clip is actually ready to decode.
+    const playLoadedClip = () => {
+      if (atelierPlayer.getAttribute("src") !== nextSrc) return;
+      atelierPlayer.muted = true;
+      const playback = atelierPlayer.play();
+      if (playback && playback.catch) playback.catch(() => {});
+    };
+    atelierPlayer.addEventListener("canplay", playLoadedClip, { once: true });
     atelierPlayer.load();
-    atelierPlayer.play().catch(() => {});
+    playLoadedClip();
     if (atCount) atCount.textContent = `${atelierIndex + 1} / ${atelierPlaylist.length}`;
   }
 
