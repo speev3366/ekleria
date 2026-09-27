@@ -31,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=gold-noir-98">
+    <link rel="stylesheet" href="styles.css?v=gold-noir-100">
 
     <script type="application/ld+json">
     {
@@ -77,6 +77,7 @@
     <div class="grain" aria-hidden="true"></div>
     <div class="edge-stripes" aria-hidden="true"></div>
     <header class="site-header">
+      <div class="header-main">
       <a class="brand" href="#top" aria-label="Еклерия">
         <img src="assets/images/optimized/logo-wall-header.webp" alt="Лого на Пекарна Еклерия" fetchpriority="high" decoding="async">
         <span>Еклерия</span>
@@ -115,6 +116,12 @@
         <button class="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobile-nav">
           <span></span><span></span><span></span>
         </button>
+      </div>
+      </div>
+      <div class="market-announcement">
+        <span class="market-announcement-star" aria-hidden="true">✦</span>
+        <p data-i18n="market.announcement">От 27.09, всяка неделя ще може да ни намерите на Фермерски пазар Варна, ул. Шипка, от 10 до 14 ч.</p>
+        <span class="market-announcement-star" aria-hidden="true">✦</span>
       </div>
     </header>
 
@@ -470,7 +477,7 @@
                 <dl>
                   <div><dt data-i18n="hours.weekdays">Понеделник - Петък</dt><dd>6:00 - 16:30</dd></div>
                   <div><dt data-i18n="hours.saturday">Събота</dt><dd>6:00 - 14:00</dd></div>
-                  <div><dt data-i18n="hours.sunday">Неделя</dt><dd data-i18n="hours.closed">Почивен ден</dd></div>
+                  <div><dt data-i18n="hours.sunday">Неделя</dt><dd class="hours-market" data-i18n="hours.market">Фермерски пазар Варна</dd></div>
                 </dl>
               </div>
               <div class="visit-panel contact-panel">
@@ -512,6 +519,6 @@
       <span class="footer-copy" data-i18n="footer.copyright">© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени.</span>
     </footer>
 
-    <script src="script.js?v=gold-noir-49"></script>
+    <script src="script.js?v=gold-noir-51"></script>
   </body>
 </html>

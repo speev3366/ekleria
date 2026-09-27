@@ -26,7 +26,7 @@
   --sans: "Montserrat", system-ui, sans-serif;
 
   --page-pad: clamp(20px, 5vw, 84px);
-  --header-h: 82px;
+  --header-h: 138px;
 
   --r-sm: 12px;
   --r-md: 20px;
@@ -389,12 +389,9 @@ h2 {
   left: clamp(8px, .8vw, 14px);
   right: clamp(8px, .8vw, 14px);
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  height: calc(var(--header-h) - 10px);
-  padding: 0 clamp(18px, 3.4vw, 64px);
+  display: block;
+  height: auto;
+  padding: 0;
   transition: transform .5s var(--ease), background-color .45s var(--ease), border-color .45s var(--ease), backdrop-filter .45s var(--ease);
   border: 1px solid rgba(232, 181, 99, .14);
   border-radius: clamp(17px, 1.45vw, 24px);
@@ -402,6 +399,68 @@ h2 {
   backdrop-filter: blur(16px) saturate(1.12);
   -webkit-backdrop-filter: blur(16px) saturate(1.12);
   box-shadow: 0 12px 34px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(246, 234, 210, .035);
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 72px;
+  padding: 0 clamp(18px, 3.4vw, 64px);
+}
+
+.market-announcement {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 30px);
+  min-height: 54px;
+  padding: 13px 24px;
+  border-top: 1px solid rgba(232, 181, 99, .5);
+  border-radius: 0 0 clamp(16px, 1.4vw, 23px) clamp(16px, 1.4vw, 23px);
+  color: #160d05;
+  background: linear-gradient(105deg, #64401e 0%, #aa7b3a 26%, #c09653 50%, #a67836 76%, #64401e 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 246, 221, .3), 0 8px 24px rgba(200, 151, 63, .12);
+}
+
+.market-announcement::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 235, 190, .28) 50%, transparent 65%);
+  transform: translateX(-110%);
+  animation: market-shimmer 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.market-announcement p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.market-announcement-star { flex: none; font-size: 14px; color: #694619; }
+
+@keyframes market-shimmer {
+  0%, 25% { transform: translateX(-110%); }
+  70%, 100% { transform: translateX(110%); }
+}
+
+@media (max-width: 600px) {
+  .market-announcement { padding: 10px 15px; gap: 0; }
+  .market-announcement-star { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .market-announcement::before { animation: none; }
 }
 
 .site-header.scrolled {
@@ -2933,3 +2992,11 @@ html.js-reveal [data-reveal].is-visible {
 
 /* keep the unified visit card's heading centred (beats the base align-items) */
 .visit-card { align-items: center; }
+
+.hours dd.hours-market {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: normal;
+  text-align: right;
+  text-wrap: balance;
+}

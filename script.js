@@ -198,7 +198,8 @@ const translations = {
     "hours.weekdays": "Понеделник - Петък",
     "hours.saturday": "Събота",
     "hours.sunday": "Неделя",
-    "hours.closed": "Почивен ден",
+    "hours.market": "Фермерски пазар Варна",
+    "market.announcement": "От 27.09, всяка неделя ще може да ни намерите на Фермерски пазар Варна, ул. Шипка, от 10 до 14 ч.",
     "contact.title": "Форми за контакт",
     "footer.note": "Специализирана пекарна за еклери във Варна.",
     "footer.copyright": "© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени."
@@ -303,7 +304,8 @@ const translations = {
     "hours.weekdays": "Monday - Friday",
     "hours.saturday": "Saturday",
     "hours.sunday": "Sunday",
-    "hours.closed": "Day off",
+    "hours.market": "Varna Farmers’ Market",
+    "market.announcement": "From 27 September, find us every Sunday at Varna Farmers’ Market, Shipka Street, from 10 am to 2 pm",
     "contact.title": "Contact options",
     "footer.note": "Specialized eclair bakery in Varna.",
     "footer.copyright": "© 2026 Bakery Ekleria. Specialized eclair bakery in Varna. All rights reserved."
@@ -566,6 +568,12 @@ document.querySelectorAll(".lang").forEach((button) => {
 });
 
 const header = document.querySelector(".site-header");
+// Keep anchor offsets and the mobile menu aligned with the wrapped announcement.
+if (header && "ResizeObserver" in window) {
+  new ResizeObserver(() => {
+    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height) + 10}px`);
+  }).observe(header);
+}
 
 function updateHeaderState() {
   header.classList.toggle("scrolled", window.scrollY > 24);
@@ -882,7 +890,7 @@ document.querySelectorAll(".visit-review-qr").forEach((link) => {
 const atelierPlayer = document.querySelector("[data-atelier-player]");
 const atelierPlaylist = [
   "assets/videos/atelier-1.mp4",
-  "assets/videos/atelier-0.mp4",
+  "assets/videos/atelier-0.mp4?v=20260824",
   "assets/videos/atelier-3.mp4",
   "assets/videos/atelier-2.mp4",
 ];
