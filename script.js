@@ -132,7 +132,7 @@ const translations = {
     "products.signature.copy": "Специално произведение, което приготвяме само по поръчка - нежен крем, фина глазура и характерният почерк на Еклерия.",
     "products.case.kicker": "Всеки ден",
     "products.case.title": "Нашите еклерови произведения",
-    "products.case.copy": "Карамел, шам фъстък, бял шоколад и тъмен шоколад - вкусове с ясна рецепта и ежедневна свежест.",
+    "products.case.copy": "Карамел, шам фъстък, бял шоколад, млечен шоколад и тъмен шоколад - вкусове с ясна рецепта и ежедневна свежест.",
     "products.charcoal.kicker": "Единствен по рода си",
     "products.charcoal.title": "Еклер с активен въглен",
     "products.charcoal.copy": "Разпознаваем специалитет на Еклерия - смел вкус, драматичен цвят и витрина, която се помни.",
@@ -152,7 +152,11 @@ const translations = {
     "productCats.eclairs": "Еклери",
     "productCats.order": "Поръчкови",
     "productCats.other": "Друго",
-    "product.roll.number": "Продукт 06",
+    "product.roll.number": "Продукт 07",
+    "product.mini.number": "Продукт 06",
+    "product.new": "Ново",
+    "mini.title": "Мини еклери",
+    "mini.copy": "По-малки по размер, но първенци по вкус. Нежен крем, любима глазура и перфектният размер за всеки сладък повод.",
     "roll.title": "Еклерово руло",
     "roll.copy": "Руло с пухкаво тесто и нежен крем, завършено със заливка по ваш избор, което се предлага по предварително направена поръчка.",
     "roll.glaze1": "Карамел",
@@ -199,7 +203,9 @@ const translations = {
     "hours.saturday": "Събота",
     "hours.sunday": "Неделя",
     "hours.market": "Фермерски пазар Варна",
-    "market.announcement": "От 27.09, всяка неделя ще може да ни намерите на Фермерски пазар Варна, ул. Шипка, от 10 до 14 ч.",
+    "market.visit": "Посетете ни",
+    "market.order": "или направете своята поръчка на тел.",
+    "market.announcement": "Очакваме ви всяка неделя от 10 до 14ч. на Фермерски пазар Варна, ул. Шипка",
     "contact.title": "Форми за контакт",
     "footer.note": "Специализирана пекарна за еклери във Варна.",
     "footer.copyright": "© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени."
@@ -238,7 +244,7 @@ const translations = {
     "products.signature.copy": "A special creation we make strictly to order - delicate cream, fine glaze and Ekleria's signature touch.",
     "products.case.kicker": "Daily",
     "products.case.title": "Our eclair creations",
-    "products.case.copy": "Caramel, pistachio, white chocolate and dark chocolate - flavors with a clear recipe and daily freshness.",
+    "products.case.copy": "Caramel, pistachio, white chocolate, milk chocolate and dark chocolate - flavors with a clear recipe and daily freshness.",
     "products.charcoal.kicker": "One of a kind",
     "products.charcoal.title": "Activated charcoal eclair",
     "products.charcoal.copy": "A recognizable Ekleria specialty - bold taste, dramatic color and a display that stays in memory.",
@@ -258,7 +264,11 @@ const translations = {
     "productCats.eclairs": "Eclairs",
     "productCats.order": "Made to order",
     "productCats.other": "Other",
-    "product.roll.number": "Product 06",
+    "product.roll.number": "Product 07",
+    "product.mini.number": "Product 06",
+    "product.new": "New",
+    "mini.title": "Mini Eclairs",
+    "mini.copy": "Smaller in size, first in flavour. Delicate cream, your favourite glaze and the perfect size for every sweet occasion.",
     "roll.title": "Eclair Roll",
     "roll.copy": "A roll with airy pastry and delicate cream, finished with a glaze of your choice, available by advance order.",
     "roll.glaze1": "Caramel",
@@ -305,7 +315,9 @@ const translations = {
     "hours.saturday": "Saturday",
     "hours.sunday": "Sunday",
     "hours.market": "Varna Farmers’ Market",
-    "market.announcement": "From 27 September, find us every Sunday at Varna Farmers’ Market, Shipka Street, from 10 am to 2 pm",
+    "market.visit": "Visit us",
+    "market.order": "or place your order by calling",
+    "market.announcement": "Join us every Sunday from 10 am to 2 pm at Varna Farmers’ Market, Shipka Street",
     "contact.title": "Contact options",
     "footer.note": "Specialized eclair bakery in Varna.",
     "footer.copyright": "© 2026 Bakery Ekleria. Specialized eclair bakery in Varna. All rights reserved."
@@ -443,7 +455,7 @@ if (menuToggle && mobileNav) {
     if (event.key === "Escape") setMenu(false);
   });
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 980) setMenu(false);
+    if (window.innerWidth > 1180) setMenu(false);
   });
 }
 
@@ -475,7 +487,7 @@ function anchorTop(entry) {
     ? Math.max(anchorOffset(), (window.innerHeight - rect.height) / 2)
     : anchorOffset();
   const limit = document.documentElement.scrollHeight - window.innerHeight;
-  return Math.max(0, Math.min(rect.top + window.scrollY - inset, limit));
+  return Math.max(0, Math.min(rect.top + window.scrollY - inset + (entry.scrollShift || 0), limit));
 }
 
 /* Everything we scroll past would load on the way anyway, so starting those
@@ -489,9 +501,10 @@ function preloadAbove(target) {
 
 let cancelAnchorScroll = null;
 
-function scrollToAnchor(hash) {
+function scrollToAnchor(hash, scrollShift = 0) {
   const entry = resolveAnchor(hash);
   if (!entry) return false;
+  entry.scrollShift = scrollShift;
 
   // a second link must take over, not wrestle the first one for the scrollbar
   if (cancelAnchorScroll) cancelAnchorScroll();
@@ -592,20 +605,11 @@ const heroVideos = {
 //    Low Power Mode / battery-saver (which pauses autoplay). It never gives up:
 //    it retries on every readiness event, on visibility, and on the first user gesture.
 const heroSources = {
-  desktopHd: "assets/videos/home_video_desktop_hd.mp4",
   desktopSafe: "assets/videos/home_video_desktop.mp4",
   mobile: "assets/videos/home_video_mobile.mp4"
 };
-
 const heroMobileMQ = window.matchMedia("(max-width: 760px)");
-const isSafariBrowser = /^((?!chrome|chromium|android|crios|fxios|edgios).)*safari/i.test(navigator.userAgent);
-let heroDesktopFallbackActive = false;
-const wantedHeroSrc = () => {
-  if (heroMobileMQ.matches) return heroSources.mobile;
-  return (isSafariBrowser || heroDesktopFallbackActive)
-    ? heroSources.desktopSafe
-    : heroSources.desktopHd;
-};
+const wantedHeroSrc = () => heroMobileMQ.matches ? heroSources.mobile : heroSources.desktopSafe;
 
 /* Only ever restart a clip the visitor can actually see. Reviving the hero
    while it is scrolled away burns battery for nothing and holds on to one of
@@ -617,7 +621,7 @@ function videoOnScreen(video) {
 }
 
 function kickHeroVideo(video) {
-  if (!video) return;
+  if (!video || document.hidden) return;
   // re-assert the flags every time — Low Power Mode can clear the effective muted state
   video.muted = true;
   video.defaultMuted = true;
@@ -645,16 +649,6 @@ function applyHeroSource() {
 
 if (heroVideos.main) {
   const mainVideo = heroVideos.main;
-
-  // A partial deployment must not leave Chrome frozen on the poster. If the
-  // preferred HD file is missing or cannot be decoded, switch once to the
-  // widely compatible desktop file that is also declared in the HTML.
-  mainVideo.addEventListener("error", () => {
-    const failedSrc = mainVideo.currentSrc || mainVideo.getAttribute("src") || "";
-    if (heroMobileMQ.matches || heroDesktopFallbackActive || !failedSrc.includes("home_video_desktop_hd.mp4")) return;
-    heroDesktopFallbackActive = true;
-    applyHeroSource();
-  });
 
   applyHeroSource();
 
@@ -701,6 +695,55 @@ if (heroVideos.main) {
   }, 700);
 }
 
+// Use the original device-specific selection film without cropping or zoom.
+const selectionVideo = document.querySelector("[data-selection-video]");
+if (selectionVideo) {
+  // The opening landscape shot fills 75% of the export; the later portrait
+  // shots fill 42%. Normalize their visible width, easing through the transition.
+  const frameSelection = () => {
+    // Hold each composition during its shot and blend only across scene changes.
+    const frames = [
+      [0, 1.2, 50], [3.5, 1.2, 50],
+      [4.5, 2.05, 50], [7, 2.05, 50], // charcoal: include more eclairs
+      [7.5, 2.2, 50], [10, 2.2, 50],
+      [10.5, 2.2, 49], [13, 2.2, 49], // milk chocolate: slightly left of centre
+      [13.5, 2.2, 50], [16, 2.2, 50],
+      [16.5, 2.2, 49], [19, 2.2, 49], // white glaze: favour the central glazed pieces
+      [19.5, 2.2, 50]
+    ];
+    const time = selectionVideo.currentTime;
+    let left = frames[0], right = frames[frames.length - 1];
+    for (const frame of frames) {
+      if (frame[0] <= time) left = frame;
+      if (frame[0] >= time) { right = frame; break; }
+    }
+    const blend = right[0] > left[0] ? Math.min(1, (time - left[0]) / (right[0] - left[0])) : 0;
+    selectionVideo.style.setProperty("--selection-zoom", String(left[1] + (right[1] - left[1]) * blend));
+    selectionVideo.style.setProperty("--selection-focus-x", `${left[2] + (right[2] - left[2]) * blend}%`);
+  };
+  selectionVideo.addEventListener("timeupdate", frameSelection);
+  selectionVideo.addEventListener("seeked", frameSelection);
+  selectionVideo.addEventListener("loadedmetadata", frameSelection);
+  const selectionMobile = window.matchMedia("(max-width: 640px)");
+  const setSelectionSource = () => {
+    selectionVideo.src = selectionMobile.matches
+      ? "assets/videos/Ekleria-Mobile-v2-FullHD.mp4"
+      : "assets/videos/Ekleria-Website-v2-FullHD.mp4";
+    selectionVideo.load();
+    const rect = selectionVideo.getBoundingClientRect();
+    if (rect.top < innerHeight && rect.bottom > 0) selectionVideo.play().catch(() => {});
+  };
+  if ("IntersectionObserver" in window) {
+    const sourceObserver = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      setSelectionSource();
+      sourceObserver.disconnect();
+    }, { rootMargin: "400px" });
+    sourceObserver.observe(selectionVideo);
+  } else setSelectionSource();
+  selectionMobile.addEventListener("change", () => { if (selectionVideo.hasAttribute("src")) setSelectionSource(); });
+}
+
 // Play each video only while it is on screen. This keeps the number of
 // simultaneously decoding videos low, which is what iOS Safari needs - otherwise
 // a heavier clip (e.g. the full-HD atelier video) can stay on a black frame.
@@ -708,7 +751,7 @@ if ("IntersectionObserver" in window) {
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       const video = entry.target;
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && !document.hidden && video.hasAttribute("src")) {
         video.muted = true;
         const playback = video.play();
         if (playback && playback.catch) playback.catch(() => {});
@@ -794,6 +837,13 @@ document.querySelectorAll("[data-product-target]").forEach((link) => {
     const targetIndex = Math.min(Math.max(Number(link.dataset.productTarget) || 0, 0), productSlides.length - 1);
 
     if (window.innerWidth <= 980) {
+      // The first visit loads images above the product and shifts its position.
+      // Use the settling anchor scroll for the mobile header's New shortcut.
+      if (link.classList.contains("mobile-new-seal")) {
+        setMenu(false);
+        scrollToAnchor("#mini-eclairs", 35);
+        return;
+      }
       productSlides[targetIndex]?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
@@ -859,6 +909,7 @@ function renderService(animate) {
 
 if (servicesTrack) {
   setInterval(() => {
+    if (document.hidden || !videoOnScreen(servicesTrack)) return;
     servicesIndex = (servicesIndex + 1) % heroServices.bg.length;
     renderService(true);
   }, 2800);
@@ -945,7 +996,7 @@ if (atelierPlayer) {
     // A source change can interrupt the immediate play() request in some
     // browsers. Retry once the selected clip is actually ready to decode.
     const playLoadedClip = () => {
-      if (atelierPlayer.getAttribute("src") !== nextSrc) return;
+      if (atelierPlayer.getAttribute("src") !== nextSrc || document.hidden || !videoOnScreen(atelierPlayer)) return;
       atelierPlayer.muted = true;
       const playback = atelierPlayer.play();
       if (playback && playback.catch) playback.catch(() => {});
@@ -1123,6 +1174,7 @@ if (atelierPlayer) {
 
       var i = 0;
       function step() {
+        if (document.hidden || !videoOnScreen(ul)) return;
         items.forEach(function (li) { li.classList.remove("is-marked"); });
         items[i % items.length].classList.add("is-marked");
         i++;
@@ -1146,7 +1198,7 @@ if (atelierPlayer) {
    ============================================================ */
 (function initTrioEclairs() {
   function run() {
-    var pedestals = document.querySelectorAll(".eclair-pedestal.boutique-render:not(.roll-render)");
+    var pedestals = document.querySelectorAll(".eclair-pedestal.boutique-render:not(.roll-render):not(.mini-render)");
     pedestals.forEach(function (fig) {
       if (fig.classList.contains("trio")) return;
       var img = fig.querySelector("img");
@@ -1301,3 +1353,115 @@ if (atelierPlayer) {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }, { passive: true });
 })();
+
+// Pause decorative work outside the viewport; resume the same animation on return.
+if ("IntersectionObserver" in window) {
+  const motionObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) entry.target.classList.toggle("motion-idle", !entry.isIntersecting);
+  }, { rootMargin: "160px" });
+  document.querySelectorAll("section, .product-slide, .marquee").forEach(el => motionObserver.observe(el));
+}
+document.addEventListener("visibilitychange", () => {
+  document.documentElement.classList.toggle("page-inactive", document.hidden);
+  document.querySelectorAll("video").forEach(video => {
+    if (document.hidden) {
+      video.dataset.resumeAfterHidden = String(!video.paused);
+      video.pause();
+    } else if (video.dataset.resumeAfterHidden === "true" && videoOnScreen(video)) {
+      video.play().catch(() => {});
+    }
+  });
+});
+// Restore the actual mobile reading position on reload, not a stale menu hash.
+(function initMobileReloadPosition() {
+  const mobile = window.matchMedia("(max-width: 980px)");
+  const blocks = Array.from(document.querySelectorAll("main section:not([hidden]), .product-slide"));
+  const storageKey = "ekleria:mobile-position:" + location.pathname;
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(storageKey)); } catch (_) {}
+  const reloading = performance.getEntriesByType("navigation")[0]?.type === "reload";
+  let restoring = false;
+  function remember() {
+    if (!mobile.matches || restoring) return;
+    const y = window.scrollY;
+    let index = -1;
+    let top = 0;
+    blocks.forEach((block, i) => {
+      const candidate = block.getBoundingClientRect().top + y;
+      if (block.getClientRects().length && candidate <= y + 1 && candidate >= top) {
+        index = i;
+        top = candidate;
+      }
+    });
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify({ y, index, offset: y - top }));
+    } catch (_) { /* Do not interrupt navigation when browser storage is blocked. */ }
+  }
+  window.addEventListener("pagehide", remember);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) remember(); });
+  if (!mobile.matches || !reloading || !saved || !Number.isFinite(saved.y)) return;
+  restoring = true;
+  history.scrollRestoration = "manual";
+  const root = document.documentElement;
+  const previousBehavior = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  // Reserve and load the content above the saved reading point before settling.
+  preloadAbove(saved.y + window.innerHeight * 2);
+  let frame = 0;
+  let stableSince = 0;
+  let lastTarget = -1;
+  let stopped = false;
+  const deadline = performance.now() + 8000;
+  const gestures = ["touchstart", "wheel", "keydown", "pointerdown"];
+  function finish() {
+    if (stopped) return;
+    stopped = true;
+    cancelAnimationFrame(frame);
+    root.style.scrollBehavior = previousBehavior;
+    history.scrollRestoration = "auto";
+    restoring = false;
+    gestures.forEach(type => window.removeEventListener(type, finish));
+  }
+  function restore(now) {
+    if (stopped) return;
+    const block = blocks[saved.index];
+    const target = saved.y < 2 ? 0 : block
+      ? block.getBoundingClientRect().top + window.scrollY + saved.offset
+      : saved.y;
+    window.scrollTo(0, target);
+    if (Math.abs(target - lastTarget) > 1) stableSince = now;
+    lastTarget = target;
+    if ((document.readyState === "complete" && document.fonts.status === "loaded" && now - stableSince > 1200) || now > deadline) {
+      finish();
+      return;
+    }
+    frame = requestAnimationFrame(restore);
+  }
+  gestures.forEach(type => window.addEventListener(type, finish, { passive: true, once: true }));
+  frame = requestAnimationFrame(restore);
+})();
+
+// Thin playback timelines; only advance frames while a clip is actually playing.
+document.querySelectorAll("[data-atelier-player], [data-selection-video]").forEach(video => {
+  const fill = video.parentElement.querySelector(".video-timeline span");
+  if (!fill) return;
+  let frame = 0;
+  function paint() {
+    const progress = Number.isFinite(video.duration) && video.duration > 0
+      ? Math.min(1, Math.max(0, video.currentTime / video.duration)) : 0;
+    fill.style.transform = `scaleX(${progress})`;
+  }
+  function tick() {
+    paint();
+    frame = !video.paused && !video.ended && !document.hidden ? requestAnimationFrame(tick) : 0;
+  }
+  function stop() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    paint();
+  }
+  video.addEventListener("playing", () => { stop(); tick(); });
+  ["pause", "ended", "waiting", "emptied"].forEach(event => video.addEventListener(event, stop));
+  ["loadedmetadata", "durationchange", "timeupdate", "seeked"].forEach(event => video.addEventListener(event, paint));
+  paint();
+});

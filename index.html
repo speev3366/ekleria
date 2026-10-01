@@ -3,6 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      // Read the tab's saved position before the browser follows an old fragment.
+      try {
+        if (matchMedia("(max-width: 980px)").matches &&
+            performance.getEntriesByType("navigation")[0]?.type === "reload" &&
+            sessionStorage.getItem("ekleria:mobile-position:" + location.pathname)) {
+          history.scrollRestoration = "manual";
+        }
+      } catch (_) { /* Native restoration remains available if storage is blocked. */ }
+    </script>
     <meta name="description" content="Пекарна Еклерия във Варна – пресни еклери по оригинална рецепта, еклери по поръчка и предложения за кафенета, магазини, хотели и ресторанти.">
     <link rel="canonical" href="https://ekleria.bg/">
     <meta name="robots" content="index, follow">
@@ -31,7 +41,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=gold-noir-100">
+    <link rel="stylesheet" href="styles.css?v=gold-noir-111">
 
     <script type="application/ld+json">
     {
@@ -86,22 +96,23 @@
         <a href="#story" data-i18n="nav.story">За нас</a>
         <a href="#selection" data-i18n="nav.selection">Селекция</a>
         <div class="nav-item">
-          <a href="#products" data-i18n="nav.products">Продукти</a>
+          <a href="#products" class="products-nav-link"><span data-i18n="nav.products">Продукти</span><span class="nav-new-seal" data-i18n="product.new">Ново</span></a>
           <div class="nav-dropdown product-nav-menu" aria-label="Продуктови категории">
             <div class="nav-subitem">
-              <a href="#eclairs" data-i18n="productCats.eclairs">Еклери</a>
+              <a class="nav-new-category" href="#eclairs" data-product-target="5" data-i18n="productCats.eclairs">Еклери</a>
               <div class="nav-submenu" aria-label="Видове еклери">
                 <a href="#eclairs" data-product-target="0" data-i18n="caramel.title">Карамел</a>
                 <a href="#eclairs" data-product-target="1" data-i18n="flavor.pistachio.title">Шам фъстък</a>
                 <a href="#eclairs" data-product-target="2" data-i18n="flavor.white.title">Бял шоколад</a>
                 <a href="#eclairs" data-product-target="3" data-i18n="flavor.dark.title">Тъмен шоколад</a>
                 <a href="#eclairs" data-product-target="4" data-i18n="flavor.charcoal.title">Активен въглен</a>
+                <a class="nav-new-product" href="#eclairs" data-product-target="5"><span data-i18n="product.new">Ново</span>: <span data-i18n="mini.title">Мини еклери</span></a>
               </div>
             </div>
             <div class="nav-subitem">
-              <a href="#eclairs" data-product-target="5" data-i18n="productCats.order">Поръчкови</a>
+              <a href="#eclairs" data-product-target="6" data-i18n="productCats.order">Поръчкови</a>
               <div class="nav-submenu" aria-label="Поръчкови продукти">
-                <a href="#eclairs" data-product-target="5" data-i18n="roll.title">Еклерово руло</a>
+                <a href="#eclairs" data-product-target="6" data-i18n="roll.title">Еклерово руло</a>
               </div>
             </div>
             <a href="#other-products" data-i18n="productCats.other">Друго</a>
@@ -111,6 +122,7 @@
         <a href="#visit" data-i18n="nav.contacts">Контакти</a>
       </nav>
       <div class="header-actions">
+        <a class="mobile-new-seal nav-new-seal" href="#mini-eclairs" data-product-target="5" aria-label="Ново: Мини еклери" data-i18n="product.new">Ново</a>
         <button class="lang active" type="button" data-lang="bg" aria-pressed="true">BG</button>
         <button class="lang" type="button" data-lang="en" aria-pressed="false">EN</button>
         <button class="menu-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobile-nav">
@@ -120,7 +132,13 @@
       </div>
       <div class="market-announcement">
         <span class="market-announcement-star" aria-hidden="true">✦</span>
-        <p data-i18n="market.announcement">От 27.09, всяка неделя ще може да ни намерите на Фермерски пазар Варна, ул. Шипка, от 10 до 14 ч.</p>
+        <p class="market-order">
+          <a class="market-address-link" href="#bakery-address"><span data-i18n="market.visit">Посетете ни</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg></a>
+          <span data-i18n="market.order">или направете своята поръчка на тел.</span>
+          <a class="market-phone-link" href="tel:+359895646009">089 564 6009</a>
+        </p>
+        <span class="market-announcement-star" aria-hidden="true">✦</span>
+        <p data-i18n="market.announcement">Очакваме ви всяка неделя от 10 до 14ч. на Фермерски пазар Варна, ул. Шипка</p>
         <span class="market-announcement-star" aria-hidden="true">✦</span>
       </div>
     </header>
@@ -128,7 +146,7 @@
     <nav class="mobile-nav" id="mobile-nav" aria-label="Мобилна навигация">
       <a href="#story" data-i18n="nav.story">За нас</a>
       <a href="#selection" data-i18n="nav.selection">Селекция</a>
-      <a href="#products" data-i18n="nav.products">Продукти</a>
+      <a href="#products" class="products-nav-link"><span data-i18n="nav.products">Продукти</span><span class="nav-new-seal" data-i18n="product.new">Ново</span></a>
       <a href="#services" data-i18n="nav.services">Услуги</a>
       <a href="#visit" data-i18n="nav.contacts">Контакти</a>
       <a class="button primary mobile-nav-cta" href="#visit" data-contact-cta data-i18n="hero.primary">Посетете ни</a>
@@ -141,7 +159,7 @@
     <main id="top">
       <section class="hero">
         <img class="hero-video-bg" src="assets/images/optimized/hero-poster-live.webp" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
-        <video class="hero-video" data-hero-video="main" src="assets/videos/home_video_desktop.mp4" autoplay muted loop playsinline preload="auto" poster="assets/images/optimized/hero-poster-live.webp"></video>
+        <video class="hero-video" data-hero-video="main" autoplay muted loop playsinline preload="auto" poster="assets/images/optimized/hero-poster-live.webp"></video>
         <div class="hero-shade"></div>
         <div class="hero-content">
           <p class="eyebrow" data-i18n="hero.eyebrow">Специализирана пекарна за Еклери</p>
@@ -194,7 +212,8 @@
           <p data-i18n="atelier.copy">Четири кратки кадъра от ателието: кремът, глазурата, еклерът с активен въглен и финалният детайл. Всичко се приготвя на място — внимателно, чисто и с характер. За вашия специален повод създаваме и еклери по поръчка.</p>
         </div>
         <div class="video-player">
-          <video class="atelier-player" data-atelier-player src="assets/videos/atelier-1.mp4" autoplay muted playsinline preload="metadata"></video>
+          <video class="atelier-player" data-atelier-player muted playsinline preload="none"></video>
+          <div class="video-timeline" aria-hidden="true"><span></span></div>
           <span class="atelier-count" data-atelier-count>1 / 4</span>
           <button class="atelier-nav atelier-prev" type="button" data-atelier-prev aria-label="Предишно видео">
             <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
@@ -237,11 +256,14 @@
         </div>
         <div class="product-grid">
           <article class="product feature">
-            <img loading="lazy" decoding="async" src="assets/images/optimized/display-case.webp" alt="Витрина с еклери">
+            <figure class="selection-film">
+              <video data-selection-video muted loop playsinline preload="none" aria-label="Нашите еклерови произведения"></video>
+              <div class="video-timeline" aria-hidden="true"><span></span></div>
+            </figure>
             <div>
               <span data-i18n="products.case.kicker">Всеки ден</span>
               <h3 data-i18n="products.case.title">Нашите еклерови произведения</h3>
-              <p data-i18n="products.case.copy">Карамел, бял шоколад, тъмен шоколад и течен шоколад - вкусове с ясна рецепта и ежедневна свежест.</p>
+              <p data-i18n="products.case.copy">Карамел, шам фъстък, бял шоколад, млечен шоколад и тъмен шоколад - вкусове с ясна рецепта и ежедневна свежест.</p>
             </div>
           </article>
           <article class="product dark">
@@ -272,14 +294,15 @@
           <p data-i18n="productsSection.copy">В началото на Варна, на ул. "Под Игото" 58, Еклерия превръща десерта в малък ритуал: истински съставки, неустоим крем, фина глазура и свежест, която се усеща още от първата хапка.</p>
         </div>
         <div class="product-categories" aria-label="Категории продукти">
+          <a class="new-product-seal" href="#eclairs" data-product-target="5" aria-label="Ново: Мини еклери"><span data-i18n="product.new">Ново</span></a>
           <a href="#eclairs" data-product-target="0" data-i18n="productCats.eclairs">Еклери</a>
-          <a href="#eclairs" data-product-target="5" data-i18n="productCats.order">Поръчкови</a>
+          <a href="#eclairs" data-product-target="6" data-i18n="productCats.order">Поръчкови</a>
           <a href="#other-products" data-i18n="productCats.other">Друго</a>
         </div>
         <div class="product-stage" id="eclairs" data-product-stage>
           <div class="product-stage-sticky">
             <div class="product-stage-head">
-              <span data-product-count>01 / 05</span>
+              <span data-product-count>01 / 07</span>
               <div class="product-stage-line"><i data-product-progress></i></div>
             </div>
             <div class="product-track" data-product-track>
@@ -353,9 +376,23 @@
                   </figure>
                 </div>
               </article>
+              <article class="product-slide mini-product" id="mini-eclairs">
+                <div class="product-slide-copy">
+                  <span data-i18n="product.mini.number">Продукт 06</span>
+                  <div class="mini-new-label" data-i18n="product.new">Ново</div>
+                  <h3 data-i18n="mini.title">Мини еклери</h3>
+                  <p data-i18n="mini.copy">По-малки по размер, но първенци по вкус. Нежен крем, любима глазура и перфектният размер за всеки сладък повод.</p>
+                </div>
+                <div class="product-spotlight">
+                  <div class="spotlight-beam"></div>
+                  <figure class="eclair-pedestal boutique-render mini-render">
+                    <img loading="lazy" decoding="async" src="assets/images/optimized/mini-eclairs-v3.webp" width="1100" height="1100" alt="Мини еклери с различни глазури">
+                  </figure>
+                </div>
+              </article>
               <article class="product-slide">
                 <div class="product-slide-copy">
-                  <span data-i18n="product.roll.number">Продукт 06</span>
+                  <span data-i18n="product.roll.number">Продукт 07</span>
                   <h3 data-i18n="roll.title">Еклерово руло</h3>
                   <p data-i18n="roll.copy">Руло с пухкаво тесто и нежен крем, завършено със заливка по ваш избор, което се предлага по предварително направена поръчка.</p>
                   <ul class="glaze-list">
@@ -377,7 +414,7 @@
           </div>
         </div>
         <figure class="products-overview">
-          <img loading="lazy" decoding="async" src="assets/images/products-overview.png" alt="Селекция от еклери на Еклерия">
+          <img loading="lazy" decoding="async" src="assets/images/optimized/products-overview.webp" alt="Селекция от еклери на Еклерия">
         </figure>
         <div class="products-showcase" data-legacy-products>
           <div class="eclair-list">
@@ -440,7 +477,7 @@
         <div class="visit-card">
           <p class="eyebrow" data-i18n="visit.eyebrow">Посетете ни</p>
           <div class="visit-grid">
-            <div class="visit-main visit-panel visit-location-panel">
+            <div class="visit-main visit-panel visit-location-panel" id="bakery-address">
               <div class="visit-address-row">
                 <h2 class="visit-address-title">
                   <span data-i18n="visit.titleLine1">гр. Варна, ул.</span>
@@ -519,6 +556,7 @@
       <span class="footer-copy" data-i18n="footer.copyright">© 2026 Пекарна Еклерия. Специализирана пекарна за еклери във Варна. Всички права запазени.</span>
     </footer>
 
-    <script src="script.js?v=gold-noir-51"></script>
+    <script src="script.js?v=gold-noir-60"></script>
   </body>
 </html>
+
